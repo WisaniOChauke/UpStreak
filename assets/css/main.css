@@ -4,6 +4,71 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme tokens ───────────────────────────────────────── */
+:root,
+.theme-default {
+  --accent:        #F59E0B;
+  --accent-hover:  #D97706;
+  --accent-light:  #FFFBEB;
+  --accent-ring:   #FBBF24;
+  --bg-app:        #FAFAF9;
+  --bg-card:       #FFFFFF;
+  --bg-sidebar:    #FFFFFF;
+  --border:        #F5F5F4;
+  --text-primary:  #292524;
+  --text-muted:    #78716C;
+  --radius-card:   1.25rem;
+}
+
+.theme-forest {
+  --accent:        #16a34a;
+  --accent-hover:  #15803d;
+  --accent-light:  #f0fdf4;
+  --accent-ring:   #4ade80;
+  --bg-app:        #f0fdf4;
+  --bg-card:       #ffffff;
+  --bg-sidebar:    #dcfce7;
+  --border:        #bbf7d0;
+  --text-primary:  #14532d;
+  --text-muted:    #4b7c5a;
+  --radius-card:   1.25rem;
+}
+
+.theme-ocean {
+  --accent:        #0284c7;
+  --accent-hover:  #0369a1;
+  --accent-light:  #f0f9ff;
+  --accent-ring:   #38bdf8;
+  --bg-app:        #f0f9ff;
+  --bg-card:       #ffffff;
+  --bg-sidebar:    #e0f2fe;
+  --border:        #bae6fd;
+  --text-primary:  #0c4a6e;
+  --text-muted:    #4a7fa5;
+  --radius-card:   1.25rem;
+}
+
+.theme-minimal {
+  --accent:        #18181b;
+  --accent-hover:  #3f3f46;
+  --accent-light:  #f4f4f5;
+  --accent-ring:   #71717a;
+  --bg-app:        #ffffff;
+  --bg-card:       #fafafa;
+  --bg-sidebar:    #f4f4f5;
+  --border:        #e4e4e7;
+  --text-primary:  #18181b;
+  --text-muted:    #71717a;
+  --radius-card:   0.75rem;
+}
+
+/* dark overrides per theme */
+.dark.theme-default, .dark .theme-default { --bg-app: #1C1917; --bg-card: #1c1917; --bg-sidebar: #1c1917; --border: #292524; }
+.dark.theme-forest,  .dark .theme-forest  { --bg-app: #052e16; --bg-card: #14532d; --bg-sidebar: #052e16; --border: #166534; }
+.dark.theme-ocean,   .dark .theme-ocean   { --bg-app: #0c1a2e; --bg-card: #0c2a4a; --bg-sidebar: #0c1a2e; --border: #1e3a5f; }
+.dark.theme-minimal, .dark .theme-minimal { --bg-app: #09090b; --bg-card: #18181b; --bg-sidebar: #09090b; --border: #27272a; }
+
+/* ── Apply tokens ───────────────────────────────────────── */
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
@@ -11,32 +76,102 @@
   }
 
   body {
-    @apply bg-stone-50 text-stone-800;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
   }
 }
 
 @layer components {
   .card {
-    @apply bg-white rounded-2xl shadow-card border border-stone-100 transition-shadow duration-200;
+    background-color: var(--bg-card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s;
   }
 
   .card:hover {
-    @apply shadow-card-hover;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
   }
 
   .btn-primary {
-    @apply bg-amber-500 hover:bg-amber-600 text-white font-medium px-4 py-2 rounded-xl transition-colors duration-150 text-sm;
+    background-color: var(--accent);
+    color: #fff;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    transition: background-color 0.15s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   .btn-ghost {
-    @apply text-stone-500 hover:text-stone-800 hover:bg-stone-100 font-medium px-3 py-2 rounded-xl transition-colors duration-150 text-sm;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    transition: background-color 0.15s, color 0.15s;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-ghost:hover {
+    background-color: var(--accent-light);
+    color: var(--text-primary);
   }
 
   .input {
-    @apply w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition;
+    width: 100%;
+    background-color: var(--bg-app);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    transition: box-shadow 0.15s, border-color 0.15s;
+    outline: none;
+  }
+
+  .input:focus {
+    box-shadow: 0 0 0 2px var(--accent-ring);
+    border-color: transparent;
+  }
+
+  .input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+  }
+
+  /* Sidebar uses sidebar bg token */
+  aside {
+    background-color: var(--bg-sidebar) !important;
+    border-color: var(--border) !important;
+  }
+
+  /* App background */
+  .min-h-screen {
+    background-color: var(--bg-app);
   }
 }

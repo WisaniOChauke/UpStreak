@@ -1,18 +1,18 @@
 <template>
-  <div :class="[darkMode ? 'dark' : '', `theme-${theme}`]" class="min-h-screen">
-    <div class="min-h-screen flex bg-stone-50 dark:bg-stone-950 transition-colors duration-300">
+  <div :class="[darkMode ? 'dark' : '', `theme-${theme}`]" class="min-h-screen" style="background-color: var(--bg-app); color: var(--text-primary); transition: background-color 0.3s, color 0.3s">
+    <div class="min-h-screen flex transition-colors duration-300" style="background-color: var(--bg-app)">
 
       <!-- Sidebar -->
-      <aside class="w-60 shrink-0 bg-white dark:bg-stone-900 border-r border-stone-100 dark:border-stone-800 flex flex-col py-6 px-4 fixed h-full transition-colors duration-300">
+      <aside class="w-60 shrink-0 border-r flex flex-col py-6 px-4 fixed h-full transition-colors duration-300" style="background-color: var(--bg-sidebar); border-color: var(--border)">
 
         <!-- Logo -->
         <div class="flex items-center gap-2.5 px-2 mb-8">
-          <div class="w-8 h-8 rounded-xl bg-amber-500 flex items-center justify-center">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background-color: var(--accent)">
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.707.707m12.728 12.728.707.707M3 12h1m16 0h1M4.927 19.073l.707-.707M18.364 5.636l.707-.707" />
             </svg>
           </div>
-          <span class="text-lg font-semibold text-stone-800 dark:text-stone-100 tracking-tight">Dayloom</span>
+          <span class="text-lg font-semibold tracking-tight" style="color: var(--text-primary)">Dayloom</span>
         </div>
 
         <!-- Nav -->
@@ -21,10 +21,10 @@
             v-for="item in nav"
             :key="item.to"
             :to="item.to"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150"
-            :class="$route.path === item.to
-              ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
-              : 'text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800'"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
+            :style="$route.path === item.to
+              ? { backgroundColor: 'var(--accent-light)', color: 'var(--accent)' }
+              : { color: 'var(--text-muted)' }"
           >
             <component :is="item.icon" class="w-4 h-4 shrink-0" />
             {{ item.label }}
@@ -46,15 +46,15 @@
         </button>
 
         <!-- XP Badge -->
-        <div class="card dark:bg-stone-800 dark:border-stone-700 p-4">
+        <div class="card p-4">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Level {{ level }}</span>
-            <span class="text-xs text-amber-500 font-semibold">{{ xp }} XP</span>
+            <span class="text-xs font-semibold uppercase tracking-wide" style="color: var(--text-muted)">Level {{ level }}</span>
+            <span class="text-xs font-semibold" style="color: var(--accent)">{{ xp }} XP</span>
           </div>
-          <div class="w-full bg-stone-100 dark:bg-stone-700 rounded-full h-1.5">
-            <div class="bg-amber-400 h-1.5 rounded-full transition-all duration-500" :style="{ width: xpPercent + '%' }" />
+          <div class="w-full rounded-full h-1.5" style="background-color: var(--border)">
+            <div class="h-1.5 rounded-full transition-all duration-500" :style="{ width: xpPercent + '%', backgroundColor: 'var(--accent)' }" />
           </div>
-          <p class="text-xs text-stone-400 mt-1.5">{{ xpToNext }} XP to next level</p>
+          <p class="text-xs mt-1.5" style="color: var(--text-muted)">{{ xpToNext }} XP to next level</p>
         </div>
 
       </aside>
