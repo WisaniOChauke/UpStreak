@@ -347,6 +347,8 @@ const toggle = (id: string) => {
 const saveEntry = () => {
   if (!journalText.value.trim()) return
   store.saveJournalEntry(journalText.value, selectedMood.value)
+  journalText.value = ''
+  selectedMood.value = 'good'
   noteSaved.value = true
   setTimeout(() => { noteSaved.value = false }, 2500)
 }
