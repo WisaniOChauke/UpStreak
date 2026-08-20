@@ -43,6 +43,34 @@
         >{{ cat.icon }} {{ cat.label }}</button>
       </div>
 
+      <!-- Category suggestions -->
+      <div v-if="activeCategory !== 'all' && categorySuggestions[activeCategory]" class="mb-5 p-4 rounded-2xl border" style="background-color: var(--accent-light); border-color: var(--border)">
+        <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color: var(--text-muted)">{{ categories.find(c => c.value === activeCategory)?.icon }} Suggested {{ activeCategory }} habits</p>
+        <div class="flex flex-col gap-2">
+          <div
+            v-for="s in categorySuggestions[activeCategory]"
+            :key="s.name"
+            class="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-stone-800 border"
+            style="border-color: var(--border)"
+          >
+            <div class="flex items-center gap-2.5">
+              <span class="text-lg">{{ s.icon }}</span>
+              <div>
+                <p class="text-sm font-medium" style="color: var(--text-primary)">{{ s.name }}</p>
+                <p class="text-xs" style="color: var(--text-muted)">{{ s.desc }}</p>
+              </div>
+            </div>
+            <button
+              class="text-xs font-semibold px-3 py-1.5 rounded-xl transition-colors shrink-0"
+              style="background-color: var(--accent); color: #fff"
+              :disabled="habitExists(s.name)"
+              :style="habitExists(s.name) ? 'opacity:0.4;cursor:not-allowed' : ''"
+              @click="quickAdd(s)"
+            >{{ habitExists(s.name) ? 'Added' : '+ Add' }}</button>
+          </div>
+        </div>
+      </div>
+
       <div class="flex flex-col gap-3">
         <div
           v-for="(habit, index) in filteredHabits"
@@ -168,6 +196,61 @@ const categories = [
 
 const activeCategory = ref('all')
 const selectedHabit = ref<typeof todayHabits.value[0] | null>(null)
+
+const categorySuggestions: Record<string, { name: string; icon: string; desc: string; xpReward: number }[]> = {
+  fitness: [
+    { name: 'Run 5km',           icon: '🏃', desc: 'Build cardio endurance',            xpReward: 30 },
+    { name: 'Do 20 pushups',     icon: '💪', desc: 'Upper body strength daily',         xpReward: 20 },
+    { name: '30-min workout',    icon: '🏋️', desc: 'Any exercise for 30 minutes',       xpReward: 25 },
+    { name: 'Stretch 10 mins',   icon: '🧘', desc: 'Improve flexibility & recovery',    xpReward: 10 },
+    { name: 'Walk 10,000 steps', icon: '🚶', desc: 'Stay active throughout the day',    xpReward: 20 },
+    { name: 'Cycle 30 mins',     icon: '🚴', desc: 'Low-impact cardio',                 xpReward: 25 },
+  ],
+  health: [
+    { name: 'Drink 2L water',  icon: '💧', desc: 'Stay hydrated every day',           xpReward: 10 },
+    { name: 'Sleep by 10pm',   icon: '😴', desc: 'Consistent sleep schedule',         xpReward: 15 },
+    { name: 'Eat vegetables',  icon: '🥦', desc: 'Include greens in every meal',      xpReward: 10 },
+    { name: 'No junk food',    icon: '🚫', desc: 'Avoid processed & fast food',       xpReward: 20 },
+    { name: 'Take vitamins',   icon: '💊', desc: 'Daily supplement routine',          xpReward: 10 },
+    { name: 'Cold shower',     icon: '🚿', desc: 'Boost energy & alertness',          xpReward: 15 },
+  ],
+  learning: [
+    { name: 'Read 20 mins',          icon: '📖', desc: 'Any book — fiction or non-fiction',  xpReward: 15 },
+    { name: 'Learn a new language',  icon: '🌍', desc: 'Duolingo or any language app',       xpReward: 20 },
+    { name: 'Try a new recipe',      icon: '🍳', desc: 'Cook something you have never made', xpReward: 20 },
+    { name: 'Watch a documentary',   icon: '🎬', desc: 'Learn something new visually',       xpReward: 10 },
+    { name: 'Practice an instrument',icon: '🎸', desc: '15+ mins of music practice',         xpReward: 20 },
+    { name: 'Online course lesson',  icon: '💻', desc: 'One lesson from any online course',  xpReward: 15 },
+  ],
+  personal: [
+    { name: 'Journal entry',    icon: '📓', desc: 'Write your thoughts and reflections', xpReward: 15 },
+    { name: 'Pray or meditate', icon: '🙏', desc: 'Spiritual or mindfulness practice',   xpReward: 15 },
+    { name: 'Gratitude list',   icon: '🌸', desc: 'Write 3 things you are grateful for', xpReward: 10 },
+    { name: 'No social media',  icon: '📵', desc: 'Digital detox for the day',           xpReward: 25 },
+    { name: 'Call a loved one', icon: '📞', desc: 'Stay connected with family or friends',xpReward: 10 },
+    { name: 'Self-care routine',icon: '✨', desc: 'Skincare, grooming, or relaxation',   xpReward: 10 },
+  ],
+  work: [
+    { name: 'Deep work 2hrs',        icon: '🎯', desc: 'Focused work with no distractions',  xpReward: 30 },
+    { name: 'Clear inbox',           icon: '📧', desc: 'Process all emails to zero',          xpReward: 15 },
+    { name: 'Plan tomorrow',         icon: '📋', desc: 'Write tomorrows task list tonight',   xpReward: 10 },
+    { name: 'Learn a work skill',    icon: '📈', desc: 'Improve a professional skill daily',  xpReward: 20 },
+    { name: 'Review goals',          icon: '🏆', desc: 'Check progress on your goals',        xpReward: 10 },
+    { name: 'No distractions 1hr',   icon: '🔕', desc: 'Phone off, full focus for an hour',   xpReward: 20 },
+  ],
+  other: [
+    { name: 'Tidy up space',          icon: '🧹', desc: 'Keep your environment clean',        xpReward: 10 },
+    { name: 'Save money',             icon: '💰', desc: 'Put aside a small amount daily',     xpReward: 15 },
+    { name: 'Random act of kindness', icon: '💛', desc: 'Do something nice for someone',      xpReward: 15 },
+    { name: 'Spend time outside',     icon: '🌳', desc: 'Get fresh air every day',            xpReward: 10 },
+  ],
+}
+
+const habitExists = (name: string) => habits.value.some(h => h.name.toLowerCase() === name.toLowerCase())
+
+const quickAdd = (s: { name: string; icon: string; xpReward: number }) => {
+  store.addHabit({ name: s.name, icon: s.icon, xpReward: s.xpReward, color: 'amber', category: activeCategory.value as any })
+}
 
 const filteredHabits = computed(() =>
   todayHabits.value.filter(h => activeCategory.value === 'all' || (h.category ?? 'other') === activeCategory.value)
