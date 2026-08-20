@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
-  devServer: { open: '/' },
   compatibilityDate: '2024-04-03',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
+  devServer: { open: '/' },
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
@@ -12,5 +12,15 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ['./stores/**'],
   },
-  typescript: { typeCheck: false }
+  typescript: { typeCheck: false },
+  app: {
+    head: {
+      title: 'Dayloom',
+      meta: [
+        { name: 'description', content: 'Weave your day — habits, goals, and journal in one place.' },
+        { name: 'theme-color', content: '#F59E0B' },
+      ],
+      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    },
+  },
 })

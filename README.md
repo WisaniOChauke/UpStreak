@@ -8,13 +8,16 @@ DayLoom is a personal productivity app that helps you track daily habits, set go
 
 ## ✨ Features
 
-- **Today** — Check off daily habits and stay on track
-- **Goals** — Set and monitor short and long-term goals
-- **Journal** — Write daily reflections and notes
-- **Stats** — Visualise your progress with charts and heatmaps
+- **Today** — Check off daily habits, filter by category, drag to reorder
+- **Goals** — Set and monitor short and long-term goals with milestones
+- **Journal** — Write daily reflections, browse and search past entries
+- **Stats** — Weekly bar chart, activity heatmap, mood trend line chart
+- **Weekly Review** — Full breakdown of your week's performance
 - **Achievements** — Earn badges as you build consistency
-- **Reminders** — Get nudged to stay on top of your habits
-- **Confetti** — Celebrate wins 🎉
+- **Profile** — Edit name, avatar, theme, export data, reset progress
+- **Themes** — Default, Forest, Ocean, Minimal (light + dark)
+- **Reminders** — Browser notifications at your chosen time
+- **Confetti** — Celebrate perfect days 🎉
 
 ---
 
@@ -24,7 +27,7 @@ DayLoom is a personal productivity app that helps you track daily habits, set go
 |---|---|
 | Framework | [Nuxt 3](https://nuxt.com/) |
 | Language | [TypeScript](https://www.typescriptlang.org/) |
-| Styling | [Tailwind CSS](https://tailwindcss.com/) |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) + CSS Custom Properties |
 | State Management | [Pinia](https://pinia.vuejs.org/) + [pinia-plugin-persistedstate](https://prazdevs.github.io/pinia-plugin-persistedstate/) |
 | Charts | [Chart.js](https://www.chartjs.org/) + [vue-chartjs](https://vue-chartjs.org/) |
 | Utilities | [VueUse](https://vueuse.org/) |
@@ -52,15 +55,32 @@ App runs at `http://localhost:3000`
 
 ---
 
+## ☁️ Deployment
+
+### Vercel (recommended)
+
+1. Push to GitHub
+2. Go to [vercel.com](https://vercel.com) → New Project → Import your repo
+3. Vercel auto-detects Nuxt 3 — just click **Deploy**
+
+### Netlify
+
+1. Go to [netlify.com](https://netlify.com) → Add new site → Import from Git
+2. Build command: `npm run generate`
+3. Publish directory: `dist`
+
+---
+
 ## 📁 Project Structure
 
 ```
 dayloom/
-├── assets/         # Global CSS
+├── assets/         # Global CSS + theme tokens
 ├── components/     # Reusable Vue components
 ├── composables/    # Shared logic (reminders, confetti)
-├── layouts/        # App layout
-├── pages/          # Routes (index, goals, journal, stats)
+├── layouts/        # App layout + onboarding
+├── pages/          # Routes (index, goals, journal, stats, weekly, profile)
+├── public/         # Static assets (favicon)
 ├── stores/         # Pinia state management
 └── nuxt.config.ts  # Nuxt configuration
 ```

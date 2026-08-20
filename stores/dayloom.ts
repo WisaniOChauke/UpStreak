@@ -60,39 +60,12 @@ const ALL_ACHIEVEMENTS: Achievement[] = [
 
 export const useDayloomStore = defineStore('dayloom', {
   state: () => ({
-    xp: 340,
+    xp: 0,
     darkMode: false,
     theme: 'default' as Theme,
     profile: { name: '', avatar: '🌅' },
-    habits: [
-      { id: '1', name: 'Morning Walk',    icon: '🚶', color: 'amber',  category: 'fitness'  as HabitCategory, completedDates: [today()], streak: 5,  xpReward: 20 },
-      { id: '2', name: 'Read 20 mins',    icon: '📖', color: 'blue',   category: 'learning' as HabitCategory, completedDates: [],         streak: 3,  xpReward: 15 },
-      { id: '3', name: 'Drink 2L Water',  icon: '💧', color: 'cyan',   category: 'health'   as HabitCategory, completedDates: [today()], streak: 12, xpReward: 10 },
-      { id: '4', name: 'No Social Media', icon: '📵', color: 'rose',   category: 'personal' as HabitCategory, completedDates: [],         streak: 1,  xpReward: 25 },
-      { id: '5', name: 'Meditate',        icon: '🧘', color: 'violet', category: 'health'   as HabitCategory, completedDates: [],         streak: 7,  xpReward: 20 },
-    ] as Habit[],
-    goals: [
-      {
-        id: '1', title: 'Run a 5K', description: 'Build up to running 5km without stopping',
-        progress: 3.2, target: 5, unit: 'km', dueDate: '2025-03-01', color: 'amber', completed: false,
-        milestones: [
-          { label: 'Run 1km', done: true },
-          { label: 'Run 2km', done: true },
-          { label: 'Run 3km', done: true },
-          { label: 'Run 5km', done: false },
-        ]
-      },
-      {
-        id: '2', title: 'Read 12 Books', description: 'One book per month this year',
-        progress: 2, target: 12, unit: 'books', dueDate: '2025-12-31', color: 'blue', completed: false,
-        milestones: [
-          { label: 'First book', done: true },
-          { label: '3 books', done: false },
-          { label: '6 books', done: false },
-          { label: '12 books', done: false },
-        ]
-      },
-    ] as Goal[],
+    habits: [] as Habit[],
+    goals: [] as Goal[],
     journal: [] as JournalEntry[],
     achievements: ALL_ACHIEVEMENTS as Achievement[],
     reminderTime: '08:00',
