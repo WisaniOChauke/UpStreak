@@ -44,38 +44,44 @@
       </div>
 
       <!-- Category suggestions -->
-      <div v-if="activeCategory !== 'all' && categorySuggestions[activeCategory]" class="mb-5 p-4 rounded-2xl border" style="background-color: var(--accent-light); border-color: var(--border)">
-        <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color: var(--text-muted)">{{ categories.find(c => c.value === activeCategory)?.icon }} Suggested {{ activeCategory }} habits</p>
-        <div class="flex flex-col gap-2">
-          <div
-            v-for="s in categorySuggestions[activeCategory]"
-            :key="s.name"
-            class="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-stone-800 border"
-            style="border-color: var(--border)"
-          >
-            <div class="flex items-center gap-2.5">
-              <span class="text-lg">{{ s.icon }}</span>
-              <div>
-                <p class="text-sm font-medium" style="color: var(--text-primary)">{{ s.name }}</p>
-                <p class="text-xs" style="color: var(--text-muted)">{{ s.desc }}</p>
+      <Transition name="suggestions">
+        <div v-if="activeCategory !== 'all' && visibleSuggestions.length" class="mb-5 p-3 rounded-2xl border" style="background-color: var(--accent-light); border-color: var(--border)">
+          <p class="text-xs font-semibold uppercase tracking-wide mb-2 px-1" style="color: var(--text-muted)">
+            {{ categories.find(c => c.value === activeCategory)?.icon }} Suggested
+          </p>
+          <div class="flex flex-col gap-1.5">
+            <Transition
+              v-for="s in visibleSuggestions"
+              :key="s.name"
+              name="suggestion-item"
+            >
+              <div
+                class="flex items-center justify-between gap-3 px-3 py-2 rounded-xl bg-white dark:bg-stone-800 border"
+                style="border-color: var(--border)"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="text-base">{{ s.icon }}</span>
+                  <div>
+                    <p class="text-xs font-medium" style="color: var(--text-primary)">{{ s.name }}</p>
+                    <p class="text-xs" style="color: var(--text-muted)">{{ s.desc }}</p>
+                  </div>
+                </div>
+                <button
+                  class="text-xs font-semibold px-2.5 py-1 rounded-lg shrink-0 transition-all"
+                  style="background-color: var(--accent); color: #fff"
+                  @click="quickAdd(s)"
+                >+ Add</button>
               </div>
-            </div>
-            <button
-              class="text-xs font-semibold px-3 py-1.5 rounded-xl transition-colors shrink-0"
-              style="background-color: var(--accent); color: #fff"
-              :disabled="habitExists(s.name)"
-              :style="habitExists(s.name) ? 'opacity:0.4;cursor:not-allowed' : ''"
-              @click="quickAdd(s)"
-            >{{ habitExists(s.name) ? 'Added' : '+ Add' }}</button>
+            </Transition>
           </div>
         </div>
-      </div>
+      </Transition>
 
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-2">
         <div
           v-for="(habit, index) in filteredHabits"
           :key="habit.id"
-          class="card dark:bg-stone-900 dark:border-stone-800 p-4 flex items-center gap-4 transition-all duration-150 group cursor-pointer"
+          class="card p-3 flex items-center gap-3 transition-all duration-150 group cursor-pointer"
           :class="habit.doneToday ? 'border-amber-200 bg-amber-50 dark:bg-amber-900/10 dark:border-amber-900' : ''"
           draggable="true"
           @dragstart="dragStart(index)"
@@ -83,35 +89,31 @@
           @drop="dragDrop(index)"
           @click="selectedHabit = habit"
         >
-          <div class="flex items-center gap-4 flex-1 min-w-0">
-            <div
-              class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
-              :class="habit.doneToday ? 'bg-amber-100 dark:bg-amber-900/40' : 'bg-stone-100 dark:bg-stone-800'"
-            >{{ habit.icon }}</div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-stone-800 dark:text-stone-100" :class="habit.doneToday ? 'line-through text-stone-400' : ''">
-                {{ habit.name }}
-              </p>
-              <p class="text-xs text-stone-400 mt-0.5">🔥 {{ habit.streak }} day streak · +{{ habit.xpReward }} XP · <span class="capitalize">{{ habit.category }}</span></p>
-            </div>
-          </div>
-          <!-- Checkbox stops propagation so it only toggles, doesn't open modal -->
           <div
-            class="w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all cursor-pointer"
+            class="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0"
+            :class="habit.doneToday ? 'bg-amber-100 dark:bg-amber-900/40' : 'bg-stone-100 dark:bg-stone-800'"
+          >{{ habit.icon }}</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate" :class="habit.doneToday ? 'line-through text-stone-400' : ''"
+              style="color: var(--text-primary)">{{ habit.name }}</p>
+            <p class="text-xs" style="color: var(--text-muted)">🔥 {{ habit.streak }} · +{{ habit.xpReward }} XP</p>
+          </div>
+          <div
+            class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all cursor-pointer"
             :class="habit.doneToday ? 'bg-amber-400 border-amber-400' : 'border-stone-200 dark:border-stone-600'"
             @click.stop="toggle(habit.id)"
           >
-            <svg v-if="habit.doneToday" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <svg v-if="habit.doneToday" class="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           <button
-            class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-400 dark:text-stone-600 dark:hover:text-red-400 transition-all ml-1 p-1 rounded-lg"
-            @click.stop="store.deleteHabit(habit.id)"
-            title="Delete habit"
+            class="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded-lg text-stone-300 hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all shrink-0"
+            @click.stop="removeHabit(habit)"
+            title="Remove habit"
           >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -248,8 +250,24 @@ const categorySuggestions: Record<string, { name: string; icon: string; desc: st
 
 const habitExists = (name: string) => habits.value.some(h => h.name.toLowerCase() === name.toLowerCase())
 
+const removingNames = ref<Set<string>>(new Set())
+
+const visibleSuggestions = computed(() => {
+  const cat = activeCategory.value
+  if (!categorySuggestions[cat]) return []
+  return categorySuggestions[cat].filter(s => !habitExists(s.name))
+})
+
 const quickAdd = (s: { name: string; icon: string; xpReward: number }) => {
-  store.addHabit({ name: s.name, icon: s.icon, xpReward: s.xpReward, color: 'amber', category: activeCategory.value as any })
+  removingNames.value = new Set([...removingNames.value, s.name])
+  setTimeout(() => {
+    store.addHabit({ name: s.name, icon: s.icon, xpReward: s.xpReward, color: 'amber', category: activeCategory.value as any })
+    removingNames.value.delete(s.name)
+  }, 350)
+}
+
+const removeHabit = (habit: { id: string; name: string }) => {
+  store.deleteHabit(habit.id)
 }
 
 const filteredHabits = computed(() =>
