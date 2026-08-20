@@ -55,6 +55,7 @@ export const useDayloomStore = defineStore('dayloom', {
   state: () => ({
     xp: 340,
     darkMode: false,
+    profile: { name: '' },
     habits: [
       { id: '1', name: 'Morning Walk',    icon: '🚶', color: 'amber',  completedDates: [today()], streak: 5,  xpReward: 20 },
       { id: '2', name: 'Read 20 mins',    icon: '📖', color: 'blue',   completedDates: [],         streak: 3,  xpReward: 15 },
@@ -214,6 +215,10 @@ export const useDayloomStore = defineStore('dayloom', {
     setReminder(time: string, enabled: boolean) {
       this.reminderTime = time
       this.remindersEnabled = enabled
+    },
+
+    setName(name: string) {
+      this.profile.name = name
     },
   },
 

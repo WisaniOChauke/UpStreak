@@ -4,7 +4,7 @@
     <!-- Header -->
     <div class="mb-8">
       <p class="text-sm text-stone-400 font-medium mb-1">{{ formattedDate }}</p>
-      <h1 class="text-3xl font-semibold text-stone-800 dark:text-stone-100 tracking-tight">Good {{ greeting }}, you 👋</h1>
+      <h1 class="text-3xl font-semibold text-stone-800 dark:text-stone-100 tracking-tight">Good {{ greeting }}, {{ store.profile.name }} 👋</h1>
       <p class="text-stone-400 mt-1 text-sm">{{ completedToday }} of {{ habits.length }} habits done today</p>
     </div>
 

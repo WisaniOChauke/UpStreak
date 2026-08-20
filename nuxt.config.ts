@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  devServer: { open: '/' },
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   modules: [
