@@ -47,14 +47,15 @@
         <div
           v-for="(habit, index) in filteredHabits"
           :key="habit.id"
-          class="card dark:bg-stone-900 dark:border-stone-800 p-4 flex items-center gap-4 transition-all duration-150 group"
+          class="card dark:bg-stone-900 dark:border-stone-800 p-4 flex items-center gap-4 transition-all duration-150 group cursor-pointer"
           :class="habit.doneToday ? 'border-amber-200 bg-amber-50 dark:bg-amber-900/10 dark:border-amber-900' : ''"
           draggable="true"
           @dragstart="dragStart(index)"
           @dragover.prevent
           @drop="dragDrop(index)"
+          @click="selectedHabit = habit"
         >
-          <button class="flex items-center gap-4 flex-1 text-left" @click="toggle(habit.id)">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
             <div
               class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
               :class="habit.doneToday ? 'bg-amber-100 dark:bg-amber-900/40' : 'bg-stone-100 dark:bg-stone-800'"
@@ -65,18 +66,20 @@
               </p>
               <p class="text-xs text-stone-400 mt-0.5">🔥 {{ habit.streak }} day streak · +{{ habit.xpReward }} XP · <span class="capitalize">{{ habit.category }}</span></p>
             </div>
-            <div
-              class="w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all"
-              :class="habit.doneToday ? 'bg-amber-400 border-amber-400' : 'border-stone-200 dark:border-stone-600'"
-            >
-              <svg v-if="habit.doneToday" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-          </button>
+          </div>
+          <!-- Checkbox stops propagation so it only toggles, doesn't open modal -->
+          <div
+            class="w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all cursor-pointer"
+            :class="habit.doneToday ? 'bg-amber-400 border-amber-400' : 'border-stone-200 dark:border-stone-600'"
+            @click.stop="toggle(habit.id)"
+          >
+            <svg v-if="habit.doneToday" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
           <button
             class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-400 dark:text-stone-600 dark:hover:text-red-400 transition-all ml-1 p-1 rounded-lg"
-            @click="store.deleteHabit(habit.id)"
+            @click.stop="store.deleteHabit(habit.id)"
             title="Delete habit"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -128,6 +131,15 @@
       </div>
     </div>
 
+    <!-- Habit Detail Modal -->
+    <HabitDetail
+      v-if="selectedHabit"
+      :habit="selectedHabit"
+      @close="selectedHabit = null"
+      @toggle="toggle"
+      @delete="store.deleteHabit"
+    />
+
   </div>
 </template>
 
@@ -155,6 +167,7 @@ const categories = [
 ]
 
 const activeCategory = ref('all')
+const selectedHabit = ref<typeof todayHabits.value[0] | null>(null)
 
 const filteredHabits = computed(() =>
   todayHabits.value.filter(h => activeCategory.value === 'all' || (h.category ?? 'other') === activeCategory.value)

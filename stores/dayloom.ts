@@ -11,6 +11,8 @@ export interface Habit {
   completedDates: string[]
   streak: number
   xpReward: number
+  notes?: string
+  bestStreak?: number
 }
 
 export type Theme = 'default' | 'forest' | 'ocean' | 'minimal'
@@ -147,9 +149,15 @@ export const useDayloomStore = defineStore('dayloom', {
       } else {
         habit.completedDates.push(t)
         habit.streak += 1
+        if (habit.streak > (habit.bestStreak ?? 0)) habit.bestStreak = habit.streak
         this.xp += habit.xpReward
         this.checkAchievements()
       }
+    },
+
+    updateHabit(id: string, fields: Partial<Pick<Habit, 'name' | 'icon' | 'category' | 'notes' | 'xpReward'>>) {
+      const habit = this.habits.find(h => h.id === id)
+      if (habit) Object.assign(habit, fields)
     },
 
     addHabit(habit: Omit<Habit, 'id' | 'completedDates' | 'streak'>) {
