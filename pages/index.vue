@@ -63,7 +63,7 @@
                   <span class="text-base">{{ s.icon }}</span>
                   <div>
                     <p class="text-xs font-medium" style="color: var(--text-primary)">{{ s.name }}</p>
-                    <p class="text-xs" style="color: var(--text-muted)">{{ s.desc }}</p>
+                    <p class="text-xs" style="color: var(--text-subtle)">{{ s.desc }}</p>
                   </div>
                 </div>
                 <button
@@ -96,7 +96,7 @@
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium truncate" :class="habit.doneToday ? 'line-through text-stone-400' : ''"
               style="color: var(--text-primary)">{{ habit.name }}</p>
-            <p class="text-xs" style="color: var(--text-muted)">🔥 {{ habit.streak }} · +{{ habit.xpReward }} XP</p>
+            <p class="text-xs" style="color: var(--text-subtle)">🔥 {{ habit.streak }} · +{{ habit.xpReward }} XP</p>
           </div>
           <div
             class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all cursor-pointer"

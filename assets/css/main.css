@@ -17,6 +17,7 @@
   --border:        #F5F5F4;
   --text-primary:  #292524;
   --text-muted:    #78716C;
+  --text-subtle:   #A8A29E;
   --radius-card:   1.25rem;
 }
 
@@ -31,6 +32,7 @@
   --border:        #bbf7d0;
   --text-primary:  #14532d;
   --text-muted:    #4b7c5a;
+  --text-subtle:   #6aab7a;
   --radius-card:   1.25rem;
 }
 
@@ -45,6 +47,7 @@
   --border:        #bae6fd;
   --text-primary:  #0c4a6e;
   --text-muted:    #4a7fa5;
+  --text-subtle:   #6aafd4;
   --radius-card:   1.25rem;
 }
 
@@ -59,14 +62,15 @@
   --border:        #e4e4e7;
   --text-primary:  #18181b;
   --text-muted:    #71717a;
+  --text-subtle:   #a1a1aa;
   --radius-card:   0.75rem;
 }
 
 /* dark overrides per theme */
-.dark.theme-default, .dark .theme-default { --bg-app: #1C1917; --bg-card: #1c1917; --bg-sidebar: #1c1917; --border: #292524; }
-.dark.theme-forest,  .dark .theme-forest  { --bg-app: #052e16; --bg-card: #14532d; --bg-sidebar: #052e16; --border: #166534; }
-.dark.theme-ocean,   .dark .theme-ocean   { --bg-app: #0c1a2e; --bg-card: #0c2a4a; --bg-sidebar: #0c1a2e; --border: #1e3a5f; }
-.dark.theme-minimal, .dark .theme-minimal { --bg-app: #09090b; --bg-card: #18181b; --bg-sidebar: #09090b; --border: #27272a; }
+.dark.theme-default, .dark .theme-default { --bg-app: #1C1917; --bg-card: #1c1917; --bg-sidebar: #1c1917; --border: #292524; --text-primary: #e7e5e4; --text-muted: #a8a29e; --text-subtle: #d6d3d1; }
+.dark.theme-forest,  .dark .theme-forest  { --bg-app: #052e16; --bg-card: #14532d; --bg-sidebar: #052e16; --border: #166534; --text-primary: #dcfce7; --text-muted: #86efac; --text-subtle: #bbf7d0; }
+.dark.theme-ocean,   .dark .theme-ocean   { --bg-app: #0c1a2e; --bg-card: #0c2a4a; --bg-sidebar: #0c1a2e; --border: #1e3a5f; --text-primary: #e0f2fe; --text-muted: #7dd3fc; --text-subtle: #bae6fd; }
+.dark.theme-minimal, .dark .theme-minimal { --bg-app: #09090b; --bg-card: #18181b; --bg-sidebar: #09090b; --border: #27272a; --text-primary: #fafafa; --text-muted: #a1a1aa; --text-subtle: #d4d4d8; }
 
 /* ── Apply tokens ───────────────────────────────────────── */
 @layer base {

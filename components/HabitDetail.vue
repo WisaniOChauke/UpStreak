@@ -9,7 +9,7 @@
         </div>
         <div class="flex-1 min-w-0">
           <h2 class="text-base font-semibold truncate" style="color: var(--text-primary)">{{ habit.name }}</h2>
-          <p class="text-xs capitalize mt-0.5" style="color: var(--text-muted)">{{ habit.category ?? 'other' }} · +{{ habit.xpReward }} XP</p>
+          <p class="text-xs capitalize mt-0.5" style="color: var(--text-subtle)">{{ habit.category ?? 'other' }} · +{{ habit.xpReward }} XP</p>
         </div>
         <button class="p-1.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors" style="color: var(--text-muted)" @click="$emit('close')">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
