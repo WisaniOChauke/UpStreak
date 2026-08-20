@@ -124,9 +124,9 @@ const { xp, level, xpPercent, xpToNext, darkMode, profile, theme } = storeToRefs
 
 onMounted(() => store.migrateHabits())
 
-const showProfileSetup = computed(() => !profile.value.name || onboardStep.value < 3)
+const showProfileSetup = computed(() => !profile.value.name)
 const nameInput = ref('')
-const onboardStep = ref(1)
+const onboardStep = ref(profile.value.name ? 3 : 1)
 const firstHabit = ref({ name: '', icon: '🎯', category: 'health', xpReward: 15, color: 'amber' })
 
 const saveName = () => {
