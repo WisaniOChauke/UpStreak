@@ -50,6 +50,15 @@
       </div>
     </div>
 
+    <!-- Mood Trend -->
+    <div class="card dark:bg-stone-900 dark:border-stone-800 p-6 mb-6">
+      <h2 class="text-sm font-semibold text-stone-600 dark:text-stone-300 mb-4">Mood Trend</h2>
+      <div v-if="moodHistory.length > 1" style="height: 160px">
+        <MoodChart />
+      </div>
+      <p v-else class="text-sm text-stone-400 text-center py-6">Write at least 2 journal entries to see your mood trend.</p>
+    </div>
+
     <!-- Heatmap -->
     <div class="mb-6">
       <HabitHeatmap />
@@ -124,7 +133,7 @@ import { useDayloomStore } from '~/stores/dayloom'
 import { storeToRefs } from 'pinia'
 
 const store = useDayloomStore()
-const { xp, level, habits, goals, journal, achievements, unlockedAchievements, weeklyStats, remindersEnabled } = storeToRefs(store)
+const { xp, level, habits, goals, journal, achievements, unlockedAchievements, weeklyStats, remindersEnabled, moodHistory } = storeToRefs(store)
 
 const reminders = useReminders()
 const reminderTime = ref(store.reminderTime)

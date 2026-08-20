@@ -30,12 +30,29 @@
         <button class="btn-ghost dark:text-stone-400 dark:hover:text-stone-100 dark:hover:bg-stone-800 text-xs" @click="showAddHabit = true">+ Add habit</button>
       </div>
 
+      <!-- Category filter -->
+      <div class="flex gap-2 flex-wrap mb-4">
+        <button
+          v-for="cat in categories"
+          :key="cat.value"
+          class="px-3 py-1 rounded-full text-xs font-medium border transition-all"
+          :class="activeCategory === cat.value
+            ? 'bg-amber-400 border-amber-400 text-white'
+            : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:border-stone-300'"
+          @click="activeCategory = cat.value"
+        >{{ cat.icon }} {{ cat.label }}</button>
+      </div>
+
       <div class="flex flex-col gap-3">
         <div
-          v-for="habit in todayHabits"
+          v-for="(habit, index) in filteredHabits"
           :key="habit.id"
           class="card dark:bg-stone-900 dark:border-stone-800 p-4 flex items-center gap-4 transition-all duration-150 group"
           :class="habit.doneToday ? 'border-amber-200 bg-amber-50 dark:bg-amber-900/10 dark:border-amber-900' : ''"
+          draggable="true"
+          @dragstart="dragStart(index)"
+          @dragover.prevent
+          @drop="dragDrop(index)"
         >
           <button class="flex items-center gap-4 flex-1 text-left" @click="toggle(habit.id)">
             <div
@@ -46,7 +63,7 @@
               <p class="text-sm font-medium text-stone-800 dark:text-stone-100" :class="habit.doneToday ? 'line-through text-stone-400' : ''">
                 {{ habit.name }}
               </p>
-              <p class="text-xs text-stone-400 mt-0.5">🔥 {{ habit.streak }} day streak · +{{ habit.xpReward }} XP</p>
+              <p class="text-xs text-stone-400 mt-0.5">🔥 {{ habit.streak }} day streak · +{{ habit.xpReward }} XP · <span class="capitalize">{{ habit.category }}</span></p>
             </div>
             <div
               class="w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all"
@@ -100,6 +117,9 @@
             <input v-model="newHabit.icon" class="input dark:bg-stone-800 dark:border-stone-700 w-20 text-center text-xl" placeholder="🎯" maxlength="2" />
             <input v-model.number="newHabit.xpReward" class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100" type="number" placeholder="XP reward" />
           </div>
+          <select v-model="newHabit.category" class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100">
+            <option v-for="cat in categories.slice(1)" :key="cat.value" :value="cat.value">{{ cat.icon }} {{ cat.label }}</option>
+          </select>
         </div>
         <div class="flex gap-2 mt-5 justify-end">
           <button class="btn-ghost" @click="showAddHabit = false">Cancel</button>
@@ -123,6 +143,30 @@ const now = new Date()
 const hour = now.getHours()
 const greeting = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening'
 const formattedDate = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+
+const categories = [
+  { value: 'all',      icon: '✨', label: 'All' },
+  { value: 'health',   icon: '💧', label: 'Health' },
+  { value: 'fitness',  icon: '🏋️', label: 'Fitness' },
+  { value: 'learning', icon: '📖', label: 'Learning' },
+  { value: 'work',     icon: '💼', label: 'Work' },
+  { value: 'personal', icon: '🌟', label: 'Personal' },
+  { value: 'other',    icon: '📦', label: 'Other' },
+]
+
+const activeCategory = ref('all')
+
+const filteredHabits = computed(() =>
+  todayHabits.value.filter(h => activeCategory.value === 'all' || h.category === activeCategory.value)
+)
+
+const dragFrom = ref<number | null>(null)
+const dragStart = (i: number) => { dragFrom.value = i }
+const dragDrop = (i: number) => {
+  if (dragFrom.value === null || dragFrom.value === i) return
+  store.reorderHabits(dragFrom.value, i)
+  dragFrom.value = null
+}
 
 const moods = [
   { value: 'great', emoji: '😄', label: 'Great' },
@@ -150,12 +194,12 @@ const saveEntry = () => {
 }
 
 const showAddHabit = ref(false)
-const newHabit = ref({ name: '', icon: '🎯', xpReward: 15, color: 'amber' })
+const newHabit = ref({ name: '', icon: '🎯', xpReward: 15, color: 'amber', category: 'health' as const })
 
 const addHabit = () => {
   if (!newHabit.value.name.trim()) return
   store.addHabit(newHabit.value)
-  newHabit.value = { name: '', icon: '🎯', xpReward: 15, color: 'amber' }
+  newHabit.value = { name: '', icon: '🎯', xpReward: 15, color: 'amber', category: 'health' as const }
   showAddHabit.value = false
 }
 </script>

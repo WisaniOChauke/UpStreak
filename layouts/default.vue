@@ -1,5 +1,5 @@
 <template>
-  <div :class="darkMode ? 'dark' : ''" class="min-h-screen">
+  <div :class="[darkMode ? 'dark' : '', `theme-${theme}`]" class="min-h-screen">
     <div class="min-h-screen flex bg-stone-50 dark:bg-stone-950 transition-colors duration-300">
 
       <!-- Sidebar -->
@@ -70,21 +70,47 @@
   <!-- Profile Setup Modal -->
   <div v-if="showProfileSetup" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-2xl p-8 w-full max-w-sm mx-4 shadow-xl">
-      <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center mb-5">
-        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.707.707m12.728 12.728.707.707M3 12h1m16 0h1" />
-        </svg>
-      </div>
-      <h2 class="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-1">Welcome to Dayloom</h2>
-      <p class="text-sm text-stone-400 mb-6">What should we call you?</p>
-      <input
-        v-model="nameInput"
-        class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100 w-full mb-4"
-        placeholder="Your name"
-        @keyup.enter="saveName"
-        autofocus
-      />
-      <button class="btn-primary w-full" :disabled="!nameInput.trim()" @click="saveName">Let's go 🚀</button>
+      <template v-if="onboardStep === 1">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center mb-5">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.707.707m12.728 12.728.707.707M3 12h1m16 0h1" />
+          </svg>
+        </div>
+        <h2 class="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-1">Welcome to Dayloom</h2>
+        <p class="text-sm text-stone-400 mb-6">What should we call you?</p>
+        <input
+          v-model="nameInput"
+          class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100 w-full mb-4"
+          placeholder="Your name"
+          @keyup.enter="saveName"
+          autofocus
+        />
+        <button class="btn-primary w-full" :disabled="!nameInput.trim()" @click="saveName">Continue →</button>
+      </template>
+
+      <template v-else-if="onboardStep === 2">
+        <p class="text-2xl mb-3">🎯</p>
+        <h2 class="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-1">Add your first habit</h2>
+        <p class="text-sm text-stone-400 mb-6">What's one thing you want to do every day?</p>
+        <div class="flex flex-col gap-3 mb-4">
+          <input v-model="firstHabit.name" class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100" placeholder="e.g. Morning walk" />
+          <div class="flex gap-3">
+            <input v-model="firstHabit.icon" class="input dark:bg-stone-800 dark:border-stone-700 w-20 text-center text-xl" placeholder="🎯" maxlength="2" />
+            <select v-model="firstHabit.category" class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100 flex-1">
+              <option value="health">💧 Health</option>
+              <option value="fitness">🏋️ Fitness</option>
+              <option value="learning">📖 Learning</option>
+              <option value="work">💼 Work</option>
+              <option value="personal">🌟 Personal</option>
+              <option value="other">📦 Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn-ghost flex-1" @click="onboardStep = 3">Skip</button>
+          <button class="btn-primary flex-1" @click="addFirstHabit">Add &amp; finish 🎉</button>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -94,14 +120,22 @@ import { useDayloomStore } from '~/stores/dayloom'
 import { storeToRefs } from 'pinia'
 
 const store = useDayloomStore()
-const { xp, level, xpPercent, xpToNext, darkMode, profile } = storeToRefs(store)
+const { xp, level, xpPercent, xpToNext, darkMode, profile, theme } = storeToRefs(store)
 
-const showProfileSetup = computed(() => !profile.value.name)
+const showProfileSetup = computed(() => !profile.value.name || onboardStep.value < 3)
 const nameInput = ref('')
+const onboardStep = ref(1)
+const firstHabit = ref({ name: '', icon: '🎯', category: 'health', xpReward: 15, color: 'amber' })
 
 const saveName = () => {
   if (!nameInput.value.trim()) return
   store.setName(nameInput.value.trim())
+  onboardStep.value = 2
+}
+
+const addFirstHabit = () => {
+  if (firstHabit.value.name.trim()) store.addHabit(firstHabit.value as any)
+  onboardStep.value = 3
 }
 
 const nav = [
@@ -109,5 +143,7 @@ const nav = [
   { to: '/goals',   label: 'Goals',   icon: resolveComponent('IconGoals') },
   { to: '/journal', label: 'Journal', icon: resolveComponent('IconJournal') },
   { to: '/stats',   label: 'Stats',   icon: resolveComponent('IconStats') },
+  { to: '/weekly',  label: 'Weekly',  icon: resolveComponent('IconStats') },
+  { to: '/profile', label: 'Profile', icon: resolveComponent('IconToday') },
 ]
 </script>

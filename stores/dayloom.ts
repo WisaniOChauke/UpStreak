@@ -1,14 +1,19 @@
 import { defineStore } from 'pinia'
 
+export type HabitCategory = 'health' | 'work' | 'personal' | 'fitness' | 'learning' | 'other'
+
 export interface Habit {
   id: string
   name: string
   icon: string
   color: string
+  category: HabitCategory
   completedDates: string[]
   streak: number
   xpReward: number
 }
+
+export type Theme = 'default' | 'forest' | 'ocean' | 'minimal'
 
 export interface Goal {
   id: string
@@ -55,13 +60,14 @@ export const useDayloomStore = defineStore('dayloom', {
   state: () => ({
     xp: 340,
     darkMode: false,
-    profile: { name: '' },
+    theme: 'default' as Theme,
+    profile: { name: '', avatar: '🌅' },
     habits: [
-      { id: '1', name: 'Morning Walk',    icon: '🚶', color: 'amber',  completedDates: [today()], streak: 5,  xpReward: 20 },
-      { id: '2', name: 'Read 20 mins',    icon: '📖', color: 'blue',   completedDates: [],         streak: 3,  xpReward: 15 },
-      { id: '3', name: 'Drink 2L Water',  icon: '💧', color: 'cyan',   completedDates: [today()], streak: 12, xpReward: 10 },
-      { id: '4', name: 'No Social Media', icon: '📵', color: 'rose',   completedDates: [],         streak: 1,  xpReward: 25 },
-      { id: '5', name: 'Meditate',        icon: '🧘', color: 'violet', completedDates: [],         streak: 7,  xpReward: 20 },
+      { id: '1', name: 'Morning Walk',    icon: '🚶', color: 'amber',  category: 'fitness'  as HabitCategory, completedDates: [today()], streak: 5,  xpReward: 20 },
+      { id: '2', name: 'Read 20 mins',    icon: '📖', color: 'blue',   category: 'learning' as HabitCategory, completedDates: [],         streak: 3,  xpReward: 15 },
+      { id: '3', name: 'Drink 2L Water',  icon: '💧', color: 'cyan',   category: 'health'   as HabitCategory, completedDates: [today()], streak: 12, xpReward: 10 },
+      { id: '4', name: 'No Social Media', icon: '📵', color: 'rose',   category: 'personal' as HabitCategory, completedDates: [],         streak: 1,  xpReward: 25 },
+      { id: '5', name: 'Meditate',        icon: '🧘', color: 'violet', category: 'health'   as HabitCategory, completedDates: [],         streak: 7,  xpReward: 20 },
     ] as Habit[],
     goals: [
       {
@@ -150,6 +156,15 @@ export const useDayloomStore = defineStore('dayloom', {
       this.habits.push({ ...habit, id: Date.now().toString(), completedDates: [], streak: 0 })
     },
 
+    reorderHabits(from: number, to: number) {
+      const h = this.habits.splice(from, 1)[0]
+      this.habits.splice(to, 0, h)
+    },
+
+    addGoal(goal: Omit<Goal, 'id' | 'completed' | 'progress'>) {
+      this.goals.push({ ...goal, id: Date.now().toString(), completed: false, progress: 0 })
+    },
+
     deleteHabit(id: string) {
       this.habits = this.habits.filter(h => h.id !== id)
     },
@@ -217,8 +232,24 @@ export const useDayloomStore = defineStore('dayloom', {
       this.remindersEnabled = enabled
     },
 
+    setProfile(name: string, avatar: string) {
+      this.profile.name = name
+      this.profile.avatar = avatar
+    },
+
     setName(name: string) {
       this.profile.name = name
+    },
+
+    setTheme(theme: Theme) {
+      this.theme = theme
+    },
+
+    resetProgress() {
+      this.xp = 0
+      this.habits.forEach(h => { h.completedDates = []; h.streak = 0 })
+      this.journal = []
+      this.achievements.forEach(a => { a.unlockedAt = null })
     },
   },
 
