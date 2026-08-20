@@ -210,6 +210,10 @@ export const useDayloomStore = defineStore('dayloom', {
       this.darkMode = !this.darkMode
     },
 
+    migrateHabits() {
+      this.habits.forEach(h => { if (!h.category) h.category = 'other' })
+    },
+
     unlockAchievement(id: string) {
       const a = this.achievements.find(a => a.id === id)
       if (a && !a.unlockedAt) a.unlockedAt = new Date().toISOString()

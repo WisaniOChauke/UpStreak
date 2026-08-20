@@ -122,6 +122,8 @@ import { storeToRefs } from 'pinia'
 const store = useDayloomStore()
 const { xp, level, xpPercent, xpToNext, darkMode, profile, theme } = storeToRefs(store)
 
+onMounted(() => store.migrateHabits())
+
 const showProfileSetup = computed(() => !profile.value.name || onboardStep.value < 3)
 const nameInput = ref('')
 const onboardStep = ref(1)

@@ -157,7 +157,7 @@ const categories = [
 const activeCategory = ref('all')
 
 const filteredHabits = computed(() =>
-  todayHabits.value.filter(h => activeCategory.value === 'all' || h.category === activeCategory.value)
+  todayHabits.value.filter(h => activeCategory.value === 'all' || (h.category ?? 'other') === activeCategory.value)
 )
 
 const dragFrom = ref<number | null>(null)
