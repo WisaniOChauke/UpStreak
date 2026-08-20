@@ -158,7 +158,10 @@
         >{{ m.emoji }} {{ m.label }}</button>
       </div>
       <textarea v-model="journalText" class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100 dark:placeholder-stone-500 resize-none h-28" placeholder="How's your day going?" />
-      <div class="flex justify-end mt-3">
+      <div class="flex items-center justify-end gap-3 mt-3">
+        <Transition name="suggestion-item">
+          <span v-if="noteSaved" class="text-xs font-medium" style="color: var(--accent)">✓ Note saved!</span>
+        </Transition>
         <button class="btn-primary" @click="saveEntry">Save note +10 XP</button>
       </div>
     </div>
@@ -320,8 +323,16 @@ const moods = [
   { value: 'bad',   emoji: '😔', label: 'Bad' },
 ]
 
-const selectedMood = ref<'great' | 'good' | 'okay' | 'bad'>('good')
+const selectedMood = ref<'great' | 'good' | 'okay' | 'bad'>(todayEntry.value?.mood ?? 'good')
 const journalText = ref(todayEntry.value?.content ?? '')
+const noteSaved = ref(false)
+
+watch(todayEntry, (entry) => {
+  if (entry) {
+    journalText.value = entry.content
+    selectedMood.value = entry.mood
+  }
+})
 
 const wasAllDone = ref(allDoneToday.value)
 
@@ -336,6 +347,8 @@ const toggle = (id: string) => {
 const saveEntry = () => {
   if (!journalText.value.trim()) return
   store.saveJournalEntry(journalText.value, selectedMood.value)
+  noteSaved.value = true
+  setTimeout(() => { noteSaved.value = false }, 2500)
 }
 
 const showAddHabit = ref(false)
