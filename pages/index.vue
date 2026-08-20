@@ -50,15 +50,8 @@
             {{ categories.find(c => c.value === activeCategory)?.icon }} Suggested
           </p>
           <div class="flex flex-col gap-1.5">
-            <Transition
-              v-for="s in visibleSuggestions"
-              :key="s.name"
-              name="suggestion-item"
-            >
-              <div
-                class="flex items-center justify-between gap-3 px-3 py-2 rounded-xl bg-white dark:bg-stone-800 border"
-                style="border-color: var(--border)"
-              >
+            <Transition v-for="s in visibleSuggestions" :key="s.name" name="suggestion-item">
+              <div class="flex items-center justify-between gap-3 px-3 py-2 rounded-xl bg-white dark:bg-stone-800 border group/s" style="border-color: var(--border)">
                 <div class="flex items-center gap-2">
                   <span class="text-base">{{ s.icon }}</span>
                   <div>
@@ -66,13 +59,43 @@
                     <p class="text-xs" style="color: var(--text-subtle)">{{ s.desc }}</p>
                   </div>
                 </div>
-                <button
-                  class="text-xs font-semibold px-2.5 py-1 rounded-lg shrink-0 transition-all"
-                  style="background-color: var(--accent); color: #fff"
-                  @click="quickAdd(s)"
-                >+ Add</button>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button
+                    class="text-xs font-semibold px-2.5 py-1 rounded-lg transition-all"
+                    style="background-color: var(--accent); color: #fff"
+                    @click="quickAdd(s)"
+                  >+ Add</button>
+                  <button
+                    class="opacity-0 group-hover/s:opacity-100 w-5 h-5 flex items-center justify-center rounded-md transition-all hover:bg-red-50 dark:hover:bg-red-900/20"
+                    style="color: var(--text-muted)"
+                    title="Hide suggestion"
+                    @click="store.dismissSuggestion(s.name)"
+                  >
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  </button>
+                </div>
               </div>
             </Transition>
+          </div>
+        </div>
+      </Transition>
+
+      <!-- Recently removed habits -->
+      <Transition name="suggestions">
+        <div v-if="removedInCategory.length" class="mb-5 p-3 rounded-2xl border" style="border-color: var(--border); background-color: var(--bg-card)">
+          <p class="text-xs font-semibold uppercase tracking-wide mb-2 px-1" style="color: var(--text-muted)">🕓 Recently removed</p>
+          <div class="flex flex-col gap-1.5">
+            <div v-for="h in removedInCategory" :key="h.id" class="flex items-center justify-between gap-3 px-3 py-2 rounded-xl border" style="border-color: var(--border)">
+              <div class="flex items-center gap-2">
+                <span class="text-base">{{ h.icon }}</span>
+                <p class="text-xs font-medium" style="color: var(--text-primary)">{{ h.name }}</p>
+              </div>
+              <button
+                class="text-xs font-semibold px-2.5 py-1 rounded-lg transition-all"
+                style="border: 1px solid var(--border); color: var(--text-muted)"
+                @click="store.reAddHabit(h)"
+              >Re-add</button>
+            </div>
           </div>
         </div>
       </Transition>
@@ -178,7 +201,7 @@ import { useDayloomStore } from '~/stores/dayloom'
 import { storeToRefs } from 'pinia'
 
 const store = useDayloomStore()
-const { todayHabits, completedToday, habits, todayEntry, allDoneToday } = storeToRefs(store)
+const { todayHabits, completedToday, habits, todayEntry, allDoneToday, removedHabits } = storeToRefs(store)
 const { fire: fireConfetti } = useConfetti()
 
 const now = new Date()
@@ -255,8 +278,16 @@ const removingNames = ref<Set<string>>(new Set())
 const visibleSuggestions = computed(() => {
   const cat = activeCategory.value
   if (!categorySuggestions[cat]) return []
-  return categorySuggestions[cat].filter(s => !habitExists(s.name))
+  return categorySuggestions[cat].filter(s =>
+    !habitExists(s.name) && !store.dismissedSuggestions.includes(s.name)
+  )
 })
+
+const removedInCategory = computed(() =>
+  activeCategory.value === 'all'
+    ? removedHabits.value
+    : removedHabits.value.filter(h => (h.category ?? 'other') === activeCategory.value)
+)
 
 const quickAdd = (s: { name: string; icon: string; xpReward: number }) => {
   removingNames.value = new Set([...removingNames.value, s.name])

@@ -70,6 +70,8 @@ export const useDayloomStore = defineStore('dayloom', {
     achievements: ALL_ACHIEVEMENTS as Achievement[],
     reminderTime: '08:00',
     remindersEnabled: false,
+    dismissedSuggestions: [] as string[],
+    removedHabits: [] as Habit[],
   }),
 
   getters: {
@@ -147,7 +149,17 @@ export const useDayloomStore = defineStore('dayloom', {
     },
 
     deleteHabit(id: string) {
+      const habit = this.habits.find(h => h.id === id)
+      if (habit) {
+        // only save to removed if it's not a built-in suggestion
+        this.removedHabits = [habit, ...this.removedHabits.filter(h => h.id !== id)].slice(0, 10)
+      }
       this.habits = this.habits.filter(h => h.id !== id)
+    },
+
+    reAddHabit(habit: Habit) {
+      this.habits.push(habit)
+      this.removedHabits = this.removedHabits.filter(h => h.id !== habit.id)
     },
 
     deleteGoal(id: string) {
@@ -235,6 +247,14 @@ export const useDayloomStore = defineStore('dayloom', {
       this.habits.forEach(h => { h.completedDates = []; h.streak = 0 })
       this.journal = []
       this.achievements.forEach(a => { a.unlockedAt = null })
+    },
+
+    dismissSuggestion(name: string) {
+      if (!this.dismissedSuggestions.includes(name)) this.dismissedSuggestions.push(name)
+    },
+
+    restoreSuggestion(name: string) {
+      this.dismissedSuggestions = this.dismissedSuggestions.filter(n => n !== name)
     },
   },
 
