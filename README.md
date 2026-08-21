@@ -75,4 +75,4 @@ dayloom/
 
 ## 📄 License
 
-MIT
+© 2025 Wisani Chauke. All rights reserved.
