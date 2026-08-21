@@ -102,16 +102,9 @@ const moods = [
   { value: 'bad',   emoji: '😔', label: 'Bad' },
 ]
 
-const selectedMood = ref<'great' | 'good' | 'okay' | 'bad'>(todayEntry.value?.mood ?? 'good')
-const journalText = ref(todayEntry.value?.content ?? '')
-const writingNew = ref(!todayEntry.value)
-
-watch(todayEntry, (entry) => {
-  if (entry && !writingNew.value) {
-    journalText.value = entry.content
-    selectedMood.value = entry.mood
-  }
-})
+const selectedMood = ref<'great' | 'good' | 'okay' | 'bad'>('good')
+const journalText = ref('')
+const writingNew = ref(true)
 
 watch(writingNew, (val) => {
   if (val) {
