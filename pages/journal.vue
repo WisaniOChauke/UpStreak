@@ -10,15 +10,18 @@
     <div class="card dark:bg-stone-900 dark:border-stone-800 p-6 mb-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-semibold text-stone-600 dark:text-stone-300">Today — {{ todayFormatted }}</h2>
-        <div class="flex gap-1.5">
-          <button
-            v-for="m in moods"
-            :key="m.value"
-            class="text-lg transition-transform hover:scale-110"
-            :class="selectedMood === m.value ? 'scale-125' : 'opacity-40'"
-            @click="selectedMood = m.value"
-            :title="m.label"
-          >{{ m.emoji }}</button>
+        <div class="flex items-center gap-3">
+          <button v-if="todayEntry && !writingNew" class="text-xs text-stone-400 hover:text-amber-500 transition-colors" @click="writingNew = true">+ New entry</button>
+          <div class="flex gap-1.5">
+            <button
+              v-for="m in moods"
+              :key="m.value"
+              class="text-lg transition-transform hover:scale-110"
+              :class="selectedMood === m.value ? 'scale-125' : 'opacity-40'"
+              @click="selectedMood = m.value"
+              :title="m.label"
+            >{{ m.emoji }}</button>
+          </div>
         </div>
       </div>
       <textarea
@@ -42,8 +45,8 @@
           <span class="text-sm font-medium text-stone-600 dark:text-stone-300 cursor-pointer" @click="openEntry(entry)">{{ formatDate(entry.date) }}</span>
           <div class="flex items-center gap-2">
             <span class="text-lg">{{ moodEmoji(entry.mood) }}</span>
-            <button class="opacity-0 group-hover:opacity-100 text-xs text-stone-400 hover:text-amber-500 transition-all" @click="startEdit(entry)">Edit</button>
-            <button class="opacity-0 group-hover:opacity-100 text-xs text-stone-400 hover:text-red-400 transition-all" @click="deleteEntry(entry.id)">Delete</button>
+            <button class="text-xs text-stone-400 hover:text-amber-500 transition-all px-1" @click="startEdit(entry)">Edit</button>
+            <button class="text-xs text-stone-400 hover:text-red-400 transition-all px-1" @click="deleteEntry(entry.id)">Delete</button>
           </div>
         </div>
         <p class="text-sm text-stone-500 leading-relaxed line-clamp-3 cursor-pointer" @click="openEntry(entry)">{{ entry.content }}</p>
@@ -101,9 +104,24 @@ const moods = [
 
 const selectedMood = ref<'great' | 'good' | 'okay' | 'bad'>(todayEntry.value?.mood ?? 'good')
 const journalText = ref(todayEntry.value?.content ?? '')
+const writingNew = ref(!todayEntry.value)
+
+watch(todayEntry, (entry) => {
+  if (entry && !writingNew.value) {
+    journalText.value = entry.content
+    selectedMood.value = entry.mood
+  }
+})
+
+watch(writingNew, (val) => {
+  if (val) {
+    journalText.value = ''
+    selectedMood.value = 'good'
+  }
+})
 
 const pastEntries = computed(() =>
-  [...journal.value].filter(e => e.date !== today).sort((a, b) => b.date.localeCompare(a.date))
+  [...journal.value].sort((a, b) => b.date.localeCompare(a.date))
 )
 
 const search = ref('')
@@ -147,7 +165,14 @@ const filteredEntries = computed(() =>
 
 const save = () => {
   if (!journalText.value.trim()) return
-  store.saveJournalEntry(journalText.value, selectedMood.value)
+  if (writingNew.value) {
+    store.addJournalEntry(journalText.value, selectedMood.value)
+  } else {
+    store.saveJournalEntry(journalText.value, selectedMood.value)
+  }
+  journalText.value = ''
+  selectedMood.value = 'good'
+  writingNew.value = false
 }
 
 const moodEmoji = (mood: string) =>

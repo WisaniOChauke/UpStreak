@@ -2,8 +2,8 @@
   <div :class="[darkMode ? 'dark' : '', `theme-${theme}`]" class="min-h-screen" style="background-color: var(--bg-app); color: var(--text-primary); transition: background-color 0.3s, color 0.3s">
     <div class="min-h-screen flex transition-colors duration-300" style="background-color: var(--bg-app)">
 
-      <!-- Sidebar -->
-      <aside class="w-60 shrink-0 border-r flex flex-col py-6 px-4 fixed h-full transition-colors duration-300" style="background-color: var(--bg-sidebar); border-color: var(--border)">
+      <!-- Sidebar (desktop only) -->
+      <aside class="hidden md:flex w-60 shrink-0 border-r flex-col py-6 px-4 fixed h-full transition-colors duration-300" style="background-color: var(--bg-sidebar); border-color: var(--border)">
 
         <!-- Logo -->
         <div class="flex items-center gap-2.5 px-2 mb-8">
@@ -66,9 +66,25 @@
       </aside>
 
       <!-- Main -->
-      <main class="flex-1 ml-60 p-8 min-h-screen">
+      <main class="flex-1 md:ml-60 p-5 md:p-8 pb-24 md:pb-8 min-h-screen">
         <slot />
       </main>
+
+      <!-- Bottom nav (mobile only) -->
+      <nav class="md:hidden fixed bottom-0 left-0 right-0 flex items-center justify-around px-2 py-2 border-t z-40" style="background-color: var(--bg-sidebar); border-color: var(--border)">
+        <NuxtLink
+          v-for="item in nav"
+          :key="item.to"
+          :to="item.to"
+          class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
+          :style="$route.path === item.to
+            ? { color: 'var(--accent)' }
+            : { color: 'var(--text-muted)' }"
+        >
+          <component :is="item.icon" class="w-5 h-5" />
+          <span class="text-[10px] font-medium">{{ item.label }}</span>
+        </NuxtLink>
+      </nav>
 
     </div>
   </div>

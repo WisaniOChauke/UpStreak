@@ -138,7 +138,10 @@ const store = useDayloomStore()
 const tabs = ['Log', 'Stats', 'Edit'] as const
 const activeTab = ref<'Log' | 'Stats' | 'Edit'>('Log')
 
-const doneToday = computed(() => props.habit.doneToday)
+const doneToday = computed(() => {
+  const t = new Date().toISOString().split('T')[0]
+  return store.habits.find(h => h.id === props.habit.id)?.completedDates.includes(t) ?? false
+})
 const notesInput = ref(props.habit.notes ?? '')
 const saveNotes = () => store.updateHabit(props.habit.id, { notes: notesInput.value })
 
@@ -156,20 +159,22 @@ const saveEdit = () => {
 }
 
 const last30 = computed(() => {
+  const completedDates = store.habits.find(h => h.id === props.habit.id)?.completedDates ?? []
   return Array.from({ length: 30 }, (_, i) => {
     const d = new Date()
     d.setDate(d.getDate() - (29 - i))
     const date = d.toISOString().split('T')[0]
-    return { date, done: props.habit.completedDates.includes(date), label: d.getDate().toString() }
+    return { date, done: completedDates.includes(date), label: d.getDate().toString() }
   })
 })
 
 const last7 = computed(() => {
+  const completedDates = store.habits.find(h => h.id === props.habit.id)?.completedDates ?? []
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
     d.setDate(d.getDate() - (6 - i))
     const date = d.toISOString().split('T')[0]
-    return { date, done: props.habit.completedDates.includes(date), label: d.toLocaleDateString('en-US', { weekday: 'short' }) }
+    return { date, done: completedDates.includes(date), label: d.toLocaleDateString('en-US', { weekday: 'short' }) }
   })
 })
 </script>

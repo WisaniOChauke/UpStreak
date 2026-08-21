@@ -194,6 +194,12 @@ export const useDayloomStore = defineStore('dayloom', {
       this.checkAchievements()
     },
 
+    addJournalEntry(content: string, mood: JournalEntry['mood']) {
+      this.journal.push({ id: Date.now().toString(), date: today(), content, mood })
+      this.xp += 10
+      this.checkAchievements()
+    },
+
     saveJournalEntry(content: string, mood: JournalEntry['mood']) {
       const existing = this.journal.find(e => e.date === today())
       if (existing) {
