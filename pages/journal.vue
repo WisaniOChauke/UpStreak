@@ -36,7 +36,10 @@
       <!-- Today's saved entries -->
       <div v-if="todayEntries.length" class="mt-4 flex flex-col gap-2">
         <div v-for="entry in todayEntries" :key="entry.id" class="flex items-start justify-between gap-3 p-3 rounded-xl" style="background-color: var(--bg-app)">
-          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed line-clamp-2 flex-1">{{ entry.content }}</p>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-medium mb-1" style="color: var(--text-muted)">{{ formatDate(entry.date, entry.id) }}</p>
+            <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed line-clamp-2">{{ entry.content }}</p>
+          </div>
           <div class="flex items-center gap-2 shrink-0">
             <span class="text-sm">{{ moodEmoji(entry.mood) }}</span>
             <button class="text-xs text-stone-400 hover:text-amber-500" @click="startEdit(entry)">Edit</button>
