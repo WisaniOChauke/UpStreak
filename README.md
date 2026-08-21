@@ -2,6 +2,8 @@
 
 > Weave your day — habits, goals, and journal in one place.
 
+🔗 **Live:** [dayloom.app](https://your-url-here) <!-- TODO: update once deployed -->
+
 DayLoom is a personal productivity app that helps you track daily habits, set goals, and reflect through journaling — all in a clean, minimal interface.
 
 ---
@@ -52,22 +54,6 @@ npm run preview
 ```
 
 App runs at `http://localhost:3000`
-
----
-
-## ☁️ Deployment
-
-### Vercel (recommended)
-
-1. Push to GitHub
-2. Go to [vercel.com](https://vercel.com) → New Project → Import your repo
-3. Vercel auto-detects Nuxt 3 — just click **Deploy**
-
-### Netlify
-
-1. Go to [netlify.com](https://netlify.com) → Add new site → Import from Git
-2. Build command: `npm run generate`
-3. Publish directory: `dist`
 
 ---
 
