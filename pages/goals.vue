@@ -100,6 +100,25 @@
       <button class="btn-primary" @click="showAddGoal = true">+ New goal</button>
     </div>
 
+    <!-- Goal suggestions -->
+    <div v-if="!activeGoals.length" class="mt-2">
+      <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color: var(--text-muted)">✨ Need inspiration?</p>
+      <div class="grid grid-cols-1 gap-2">
+        <button
+          v-for="s in goalSuggestions" :key="s.title"
+          class="flex items-center gap-3 p-3 rounded-xl border text-left transition-all hover:border-amber-300 dark:hover:border-amber-700"
+          style="border-color: var(--border); background-color: var(--bg-card)"
+          @click="prefill(s)"
+        >
+          <span class="text-xl shrink-0">{{ s.icon }}</span>
+          <div>
+            <p class="text-sm font-medium" style="color: var(--text-primary)">{{ s.title }}</p>
+            <p class="text-xs" style="color: var(--text-muted)">{{ s.description }}</p>
+          </div>
+        </button>
+      </div>
+    </div>
+
     <!-- Add Goal Modal -->
     <div v-if="showAddGoal" class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50" @click.self="showAddGoal = false">
       <div class="card dark:bg-stone-900 dark:border-stone-800 p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
@@ -165,6 +184,30 @@ const formatDate = (d: string) =>
 
 const showAddGoal = ref(false)
 const newGoal = ref({ title: '', description: '', target: 1, unit: '', dueDate: '', color: 'amber', milestones: [{ label: '', done: false }] })
+
+const goalSuggestions = [
+  { icon: '📚', title: 'Read 12 books',        description: 'One book per month this year',         target: 12,  unit: 'books',    milestones: ['Read 3 books', 'Read 6 books', 'Read 9 books', 'Read 12 books'] },
+  { icon: '🏃', title: 'Run 100km',             description: 'Build up your running distance',        target: 100, unit: 'km',       milestones: ['Run 25km', 'Run 50km', 'Run 75km', 'Run 100km'] },
+  { icon: '💰', title: 'Save R10,000',          description: 'Build an emergency fund',               target: 10000, unit: 'rand',   milestones: ['Save R2,500', 'Save R5,000', 'Save R7,500', 'Save R10,000'] },
+  { icon: '💪', title: 'Do 1000 pushups',       description: 'Spread across the month',               target: 1000, unit: 'pushups', milestones: ['250 pushups', '500 pushups', '750 pushups', '1000 pushups'] },
+  { icon: '🧘', title: 'Meditate 30 days',      description: 'Build a daily mindfulness habit',       target: 30,  unit: 'days',     milestones: ['7 days', '14 days', '21 days', '30 days'] },
+  { icon: '✍️', title: 'Write 10 journal entries', description: 'Reflect on your week regularly',    target: 10,  unit: 'entries',  milestones: ['3 entries', '5 entries', '8 entries', '10 entries'] },
+  { icon: '🎓', title: 'Complete an online course', description: 'Learn a new skill end to end',     target: 100, unit: '%',        milestones: ['25% done', '50% done', '75% done', 'Completed'] },
+  { icon: '🌍', title: 'Learn 100 new words',   description: 'In any language you are learning',     target: 100, unit: 'words',    milestones: ['25 words', '50 words', '75 words', '100 words'] },
+]
+
+const prefill = (s: typeof goalSuggestions[0]) => {
+  newGoal.value = {
+    title: s.title,
+    description: s.description,
+    target: s.target,
+    unit: s.unit,
+    dueDate: '',
+    color: 'amber',
+    milestones: s.milestones.map(label => ({ label, done: false })),
+  }
+  showAddGoal.value = true
+}
 
 const addGoal = () => {
   if (!newGoal.value.title.trim() || !newGoal.value.target || !newGoal.value.unit.trim()) return
