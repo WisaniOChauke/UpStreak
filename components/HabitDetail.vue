@@ -34,11 +34,11 @@
         <button
           class="w-full flex items-center justify-between p-4 rounded-2xl border-2 mb-5 transition-all"
           :style="doneToday
-            ? { borderColor: 'var(--accent)', backgroundColor: 'var(--accent-light)' }
+            ? { borderColor: 'var(--accent)', backgroundColor: 'var(--accent)', opacity: '0.85' }
             : { borderColor: 'var(--border)', backgroundColor: 'var(--bg-app)' }"
           @click="$emit('toggle', habit.id)"
         >
-          <span class="text-sm font-medium" style="color: var(--text-primary)">{{ doneToday ? '✅ Done today!' : 'Mark as done today' }}</span>
+          <span class="text-sm font-medium" :style="doneToday ? { color: '#fff' } : { color: 'var(--text-primary)' }">{{ doneToday ? '✅ Done today!' : 'Mark as done today' }}</span>
           <div class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all"
             :style="doneToday ? { backgroundColor: 'var(--accent)', borderColor: 'var(--accent)' } : { borderColor: 'var(--border)' }">
             <svg v-if="doneToday" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
