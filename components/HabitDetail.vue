@@ -65,7 +65,8 @@
           class="input resize-none h-20 text-sm"
           placeholder="Any notes for this habit..."
         />
-        <div class="flex justify-end mt-2">
+        <div class="flex items-center justify-end gap-3 mt-2">
+          <span v-if="notesSaved" class="text-xs" style="color: var(--accent)">✓ Saved!</span>
           <button class="btn-primary text-xs" @click="saveNotes">Save notes</button>
         </div>
       </div>
@@ -144,8 +145,14 @@ const doneToday = computed(() => {
   const t = new Date().toISOString().split('T')[0]
   return store.habits.find(h => h.id === props.habit.id)?.completedDates.includes(t) ?? false
 })
-const notesInput = ref(props.habit.notes ?? '')
-const saveNotes = () => store.updateHabit(props.habit.id, { notes: notesInput.value })
+const notesInput = ref('')
+const notesSaved = ref(false)
+const saveNotes = () => {
+  store.updateHabit(props.habit.id, { notes: notesInput.value })
+  notesInput.value = ''
+  notesSaved.value = true
+  setTimeout(() => { notesSaved.value = false }, 2000)
+}
 
 const edit = ref({
   name: props.habit.name,
