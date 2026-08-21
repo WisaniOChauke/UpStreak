@@ -32,6 +32,18 @@
       <div class="flex justify-end mt-3">
         <button class="btn-primary" @click="save">Save +10 XP</button>
       </div>
+
+      <!-- Today's saved entries -->
+      <div v-if="todayEntries.length" class="mt-4 flex flex-col gap-2">
+        <div v-for="entry in todayEntries" :key="entry.id" class="flex items-start justify-between gap-3 p-3 rounded-xl" style="background-color: var(--bg-app)">
+          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed line-clamp-2 flex-1">{{ entry.content }}</p>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-sm">{{ moodEmoji(entry.mood) }}</span>
+            <button class="text-xs text-stone-400 hover:text-amber-500" @click="startEdit(entry)">Edit</button>
+            <button class="text-xs text-stone-400 hover:text-red-400" @click="deleteEntry(entry.id)">Delete</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Past entries -->
@@ -53,7 +65,7 @@
       </div>
     </div>
 
-    <div v-else-if="!journal.length" class="text-center py-12 text-stone-300">
+    <div v-else-if="!pastEntries.length && !journal.length" class="text-center py-12 text-stone-300">
       <p class="text-4xl mb-3">📓</p>
       <p class="text-sm">Your story starts today — write your first entry above.</p>
     </div>
@@ -114,7 +126,11 @@ watch(writingNew, (val) => {
 })
 
 const pastEntries = computed(() =>
-  [...journal.value].sort((a, b) => b.date.localeCompare(a.date))
+  [...journal.value].filter(e => e.date !== today).sort((a, b) => b.date.localeCompare(a.date))
+)
+
+const todayEntries = computed(() =>
+  journal.value.filter(e => e.date === today).sort((a, b) => a.id.localeCompare(b.id))
 )
 
 const search = ref('')
