@@ -60,15 +60,27 @@
 
         <!-- Notes -->
         <p class="text-xs font-semibold uppercase tracking-wide mt-5 mb-2" style="color: var(--text-muted)">Notes</p>
-        <textarea
-          v-model="notesInput"
-          class="input resize-none h-20 text-sm"
-          placeholder="Any notes for this habit..."
-        />
-        <div class="flex items-center justify-end gap-3 mt-2">
-          <span v-if="notesSaved" class="text-xs" style="color: var(--accent)">✓ Saved!</span>
-          <button class="btn-primary text-xs" @click="saveNotes">Save notes</button>
+
+        <!-- Saved note preview -->
+        <div v-if="savedNote && !editingNote" class="flex items-start justify-between gap-2 p-3 rounded-xl mb-2" style="background-color: var(--bg-app)">
+          <p class="text-xs leading-relaxed flex-1" style="color: var(--text-primary)">{{ savedNote }}</p>
+          <button class="text-xs shrink-0" style="color: var(--text-muted)" @click="editingNote = true; notesInput = savedNote">✏️</button>
         </div>
+
+        <!-- Input -->
+        <div v-if="!savedNote || editingNote">
+          <textarea
+            v-model="notesInput"
+            class="input resize-none h-20 text-sm"
+            placeholder="Any notes for this habit..."
+          />
+          <div class="flex items-center justify-end gap-3 mt-2">
+            <button v-if="editingNote" class="btn-ghost text-xs" @click="editingNote = false; notesInput = ''">Cancel</button>
+            <button class="btn-primary text-xs" @click="saveNotes">Save notes</button>
+          </div>
+        </div>
+
+        <button v-else class="text-xs mt-1" style="color: var(--accent)" @click="editingNote = true; notesInput = savedNote">+ Add another note</button>
       </div>
 
       <!-- Tab: Stats -->
@@ -146,12 +158,13 @@ const doneToday = computed(() => {
   return store.habits.find(h => h.id === props.habit.id)?.completedDates.includes(t) ?? false
 })
 const notesInput = ref('')
-const notesSaved = ref(false)
+const editingNote = ref(false)
+const savedNote = computed(() => store.habits.find(h => h.id === props.habit.id)?.notes ?? '')
 const saveNotes = () => {
-  store.updateHabit(props.habit.id, { notes: notesInput.value })
+  if (!notesInput.value.trim()) return
+  store.updateHabit(props.habit.id, { notes: notesInput.value.trim() })
   notesInput.value = ''
-  notesSaved.value = true
-  setTimeout(() => { notesSaved.value = false }, 2000)
+  editingNote.value = false
 }
 
 const edit = ref({

@@ -119,7 +119,7 @@
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium truncate" :class="habit.doneToday ? 'line-through text-stone-400' : ''"
               style="color: var(--text-primary)">{{ habit.name }}</p>
-            <p class="text-xs" style="color: var(--text-subtle)">🔥 {{ habit.streak }} · +{{ habit.xpReward }} XP</p>
+            <p class="text-xs" style="color: var(--text-subtle)">🔥 {{ habit.streak }} · +{{ habit.xpReward }} XP<span v-if="habit.notes" class="ml-1.5">📝</span></p>
           </div>
           <div
             class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all cursor-pointer"
