@@ -61,3 +61,11 @@
 - [ ] Habit templates marketplace
 - [ ] Custom XP rules per habit
 - [ ] Pomodoro timer integration
+
+---
+
+## 🏷️ Branding
+
+- [ ] Rename app for V2 — shortlisted: **Daypulse** or **Habify**
+- [ ] New logo and favicon
+- [ ] Update all references across codebase (store keys, page titles, README, meta tags)
