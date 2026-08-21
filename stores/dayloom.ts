@@ -79,6 +79,23 @@ export const useDayloomStore = defineStore('dayloom', {
     xpPercent: (state) => ((state.xp % 200) / 200) * 100,
     xpToNext: (state) => 200 - (state.xp % 200),
 
+    rank: (state) => {
+      const lv = Math.floor(state.xp / 200) + 1
+      const ranks = [
+        { min: 1,  icon: '🌱', title: 'Wanderer' },
+        { min: 2,  icon: '📖', title: 'Apprentice' },
+        { min: 3,  icon: '🔍', title: 'Seeker' },
+        { min: 4,  icon: '🎯', title: 'Focused' },
+        { min: 5,  icon: '💪', title: 'Disciplined' },
+        { min: 6,  icon: '⚔️',  title: 'Warrior' },
+        { min: 7,  icon: '🧘', title: 'Sage' },
+        { min: 8,  icon: '🌙', title: 'Monk' },
+        { min: 9,  icon: '⚡',  title: 'Ascetic' },
+        { min: 10, icon: '🌟', title: 'Enlightened' },
+      ]
+      return ranks.slice().reverse().find(r => lv >= r.min) ?? ranks[0]
+    },
+
     todayHabits: (state) =>
       state.habits.map(h => ({ ...h, doneToday: h.completedDates.includes(today()) })),
 

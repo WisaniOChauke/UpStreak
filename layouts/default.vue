@@ -47,14 +47,20 @@
 
         <!-- XP Badge -->
         <div class="card p-4">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-semibold uppercase tracking-wide" style="color: var(--text-muted)">Level {{ level }}</span>
-            <span class="text-xs font-semibold" style="color: var(--accent)">{{ xp }} XP</span>
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center gap-1.5">
+              <span class="text-base">{{ rank.icon }}</span>
+              <span class="text-xs font-bold" style="color: var(--accent)">{{ rank.title }}</span>
+            </div>
+            <span class="text-xs font-semibold" style="color: var(--text-muted)">Lv {{ level }}</span>
           </div>
+          <p class="text-xs mb-2" style="color: var(--text-subtle)">
+            {{ level < 10 ? `Next: ${nextRank.icon} ${nextRank.title}` : '🌟 Max rank reached!' }}
+          </p>
           <div class="w-full rounded-full h-1.5" style="background-color: var(--border)">
             <div class="h-1.5 rounded-full transition-all duration-500" :style="{ width: xpPercent + '%', backgroundColor: 'var(--accent)' }" />
           </div>
-          <p class="text-xs mt-1.5" style="color: var(--text-muted)">{{ xpToNext }} XP to next level</p>
+          <p class="text-xs mt-1.5" style="color: var(--text-muted)">{{ xpToNext }} XP to next level · {{ xp }} total</p>
         </div>
 
       </aside>
@@ -66,6 +72,20 @@
 
     </div>
   </div>
+
+  <!-- Rank-up celebration -->
+  <Transition name="suggestions">
+    <div v-if="rankUpData" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50" @click="rankUpData = null">
+      <div class="rounded-3xl p-8 w-full max-w-sm mx-4 text-center shadow-2xl" style="background-color: var(--bg-card); border: 1px solid var(--border)">
+        <div class="text-6xl mb-4">{{ rankUpData.icon }}</div>
+        <p class="text-xs font-semibold uppercase tracking-widest mb-1" style="color: var(--accent)">Rank Up!</p>
+        <h2 class="text-2xl font-bold mb-2" style="color: var(--text-primary)">{{ rankUpData.title }}</h2>
+        <p class="text-sm mb-1" style="color: var(--text-muted)">You reached Level {{ level }}</p>
+        <p class="text-xs mb-6" style="color: var(--text-subtle)">Keep building your discipline. The streak continues.</p>
+        <button class="btn-primary w-full" @click="rankUpData = null">Let's keep going 🚀</button>
+      </div>
+    </div>
+  </Transition>
 
   <!-- Profile Setup Modal -->
   <div v-if="showProfileSetup" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
@@ -120,7 +140,35 @@ import { useDayloomStore } from '~/stores/dayloom'
 import { storeToRefs } from 'pinia'
 
 const store = useDayloomStore()
-const { xp, level, xpPercent, xpToNext, darkMode, profile, theme } = storeToRefs(store)
+const { xp, level, xpPercent, xpToNext, darkMode, profile, theme, rank } = storeToRefs(store)
+const { fire: fireConfetti } = useConfetti()
+
+const ranks = [
+  { min: 1,  icon: '🌱', title: 'Wanderer' },
+  { min: 2,  icon: '📖', title: 'Apprentice' },
+  { min: 3,  icon: '🔍', title: 'Seeker' },
+  { min: 4,  icon: '🎯', title: 'Focused' },
+  { min: 5,  icon: '💪', title: 'Disciplined' },
+  { min: 6,  icon: '⚔️',  title: 'Warrior' },
+  { min: 7,  icon: '🧘', title: 'Sage' },
+  { min: 8,  icon: '🌙', title: 'Monk' },
+  { min: 9,  icon: '⚡',  title: 'Ascetic' },
+  { min: 10, icon: '🌟', title: 'Enlightened' },
+]
+
+const nextRank = computed(() => ranks.find(r => r.min === level.value + 1) ?? ranks[ranks.length - 1])
+
+const rankUpData = ref<{ icon: string; title: string } | null>(null)
+
+watch(level, (newLv, oldLv) => {
+  if (newLv > oldLv) {
+    const r = ranks.find(r => r.min === newLv)
+    if (r) {
+      rankUpData.value = r
+      fireConfetti()
+    }
+  }
+})
 
 onMounted(() => store.migrateHabits())
 
