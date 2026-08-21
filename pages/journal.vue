@@ -54,7 +54,7 @@
       </div>
       <div v-for="entry in filteredEntries" :key="entry.id" class="card dark:bg-stone-900 dark:border-stone-800 p-5 group hover:border-amber-200 dark:hover:border-amber-800 transition-colors">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-sm font-medium text-stone-600 dark:text-stone-300 cursor-pointer" @click="openEntry(entry)">{{ formatDate(entry.date) }}</span>
+          <span class="text-sm font-medium text-stone-600 dark:text-stone-300 cursor-pointer" @click="openEntry(entry)">{{ formatDate(entry.date, entry.id) }}</span>
           <div class="flex items-center gap-2">
             <span class="text-lg">{{ moodEmoji(entry.mood) }}</span>
             <button class="text-xs text-stone-400 hover:text-amber-500 transition-all px-1" @click="startEdit(entry)">Edit</button>
@@ -74,7 +74,7 @@
     <div v-if="selected" class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50" @click.self="closeModal">
       <div class="card dark:bg-stone-900 dark:border-stone-800 p-6 w-full max-w-lg mx-4 max-h-[80vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
-          <span class="text-sm font-semibold text-stone-600 dark:text-stone-300">{{ formatDate(selected.date) }}</span>
+          <span class="text-sm font-semibold text-stone-600 dark:text-stone-300">{{ formatDate(selected.date, selected.id) }}</span>
           <div class="flex items-center gap-3">
             <span class="text-xl">{{ moodEmoji(selected.mood) }}</span>
             <button class="text-stone-300 hover:text-stone-500" @click="closeModal">
@@ -174,6 +174,10 @@ const save = () => {
 const moodEmoji = (mood: string) =>
   moods.find(m => m.value === mood)?.emoji ?? '🙂'
 
-const formatDate = (d: string) =>
-  new Date(d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+const formatDate = (d: string, id?: string) => {
+  const date = new Date(d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+  if (!id) return date
+  const time = new Date(parseInt(id)).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  return `${date} · ${time}`
+}
 </script>
