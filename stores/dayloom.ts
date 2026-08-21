@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { persistedState } from '#imports'
 
 export type HabitCategory = 'health' | 'work' | 'personal' | 'fitness' | 'learning' | 'other'
 
@@ -275,5 +276,8 @@ export const useDayloomStore = defineStore('dayloom', {
     },
   },
 
-  persist: true,
+  persist: {
+    key: 'dayloom-v1',
+    storage: persistedState.localStorage,
+  },
 })
