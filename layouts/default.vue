@@ -142,6 +142,7 @@
           autofocus
         />
         <button class="btn-primary w-full" :disabled="!nameInput.trim()" @click="saveName">Continue →</button>
+        <p class="text-xs text-center mt-4" style="color: var(--text-muted)">💾 Your data is saved locally on this device. Sign-in & cloud sync coming in v2.</p>
       </template>
 
       <template v-else-if="onboardStep === 2">
