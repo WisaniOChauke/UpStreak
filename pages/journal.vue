@@ -3,7 +3,7 @@
 
     <div class="mb-8">
       <h1 class="text-3xl font-semibold text-stone-800 dark:text-stone-100 tracking-tight">Journal</h1>
-      <p class="text-stone-400 mt-1 text-sm">{{ journal.length }} entries</p>
+      <p class="text-stone-400 mt-1 text-sm">{{ journal.length }} {{ journal.length === 1 ? 'entry' : 'entries' }}</p>
     </div>
 
     <!-- Write today's entry -->

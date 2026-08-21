@@ -5,7 +5,7 @@
     <div class="mb-8">
       <p class="text-sm text-stone-400 font-medium mb-1">{{ formattedDate }}</p>
       <h1 class="text-3xl font-semibold text-stone-800 dark:text-stone-100 tracking-tight">Good {{ greeting }}, {{ store.profile.name }} 👋</h1>
-      <p class="text-stone-400 mt-1 text-sm">{{ completedToday }} of {{ habits.length }} habits done today</p>
+      <p class="text-stone-400 mt-1 text-sm">{{ completedToday }} of {{ habits.length }} {{ habits.length === 1 ? 'habit' : 'habits' }} done today</p>
     </div>
 
     <!-- Progress bar -->
