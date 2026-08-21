@@ -7,7 +7,7 @@
           <h1 class="text-3xl font-semibold text-stone-800 dark:text-stone-100 tracking-tight">Goals</h1>
           <p class="text-stone-400 mt-1 text-sm">{{ activeGoals.length }} active · {{ completedGoals.length }} completed</p>
         </div>
-        <button class="btn-primary" @click="showAddGoal = true">+ New goal</button>
+        <button class="btn-primary" @click="newGoal = { title: '', description: '', target: 1, unit: '', dueDate: '', color: 'amber', milestones: [{ label: '', done: false }] }; showAddGoal = true">+ New goal</button>
       </div>
     </div>
 
@@ -97,7 +97,7 @@
     <div v-if="!activeGoals.length && !completedGoals.length" class="text-center py-16 text-stone-300">
       <p class="text-5xl mb-3">🎯</p>
       <p class="text-sm mb-4">No goals yet. Set your first one!</p>
-      <button class="btn-primary" @click="showAddGoal = true">+ New goal</button>
+      <button class="btn-primary" @click="newGoal = { title: '', description: '', target: 1, unit: '', dueDate: '', color: 'amber', milestones: [{ label: '', done: false }] }; showAddGoal = true">+ New goal</button>
     </div>
 
     <!-- Goal suggestions -->
