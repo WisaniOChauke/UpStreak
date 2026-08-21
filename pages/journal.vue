@@ -11,7 +11,7 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-semibold text-stone-600 dark:text-stone-300">Today — {{ todayFormatted }}</h2>
         <div class="flex items-center gap-3">
-          <button v-if="todayEntry && !writingNew" class="text-xs text-stone-400 hover:text-amber-500 transition-colors" @click="writingNew = true">+ New entry</button>
+          <button v-if="todayEntries.length" class="text-xs text-stone-400 hover:text-amber-500 transition-colors" @click="journalText = ''; selectedMood = 'good'">+ New entry</button>
           <div class="flex gap-1.5">
             <button
               v-for="m in moods"
@@ -116,14 +116,6 @@ const moods = [
 
 const selectedMood = ref<'great' | 'good' | 'okay' | 'bad'>('good')
 const journalText = ref('')
-const writingNew = ref(true)
-
-watch(writingNew, (val) => {
-  if (val) {
-    journalText.value = ''
-    selectedMood.value = 'good'
-  }
-})
 
 const pastEntries = computed(() =>
   [...journal.value].filter(e => e.date !== today).sort((a, b) => b.date.localeCompare(a.date))
@@ -174,14 +166,9 @@ const filteredEntries = computed(() =>
 
 const save = () => {
   if (!journalText.value.trim()) return
-  if (writingNew.value) {
-    store.addJournalEntry(journalText.value, selectedMood.value)
-  } else {
-    store.saveJournalEntry(journalText.value, selectedMood.value)
-  }
+  store.addJournalEntry(journalText.value, selectedMood.value)
   journalText.value = ''
   selectedMood.value = 'good'
-  writingNew.value = false
 }
 
 const moodEmoji = (mood: string) =>
