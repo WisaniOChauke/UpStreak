@@ -267,7 +267,7 @@ const categorySuggestions: Record<string, { name: string; icon: string; desc: st
   work: [
     { name: 'Deep work 2hrs',        icon: '🎯', desc: 'Focused work with no distractions',  xpReward: 30 },
     { name: 'Clear inbox',           icon: '📧', desc: 'Process all emails to zero',          xpReward: 15 },
-    { name: 'Plan tomorrow',         icon: '📋', desc: 'Write tomorrows task list tonight',   xpReward: 10 },
+    { name: 'Plan tomorrow',         icon: '📋', desc: 'Write tomorrow\'s task list',          xpReward: 10 },
     { name: 'Learn a work skill',    icon: '📈', desc: 'Improve a professional skill daily',  xpReward: 20 },
     { name: 'Review goals',          icon: '🏆', desc: 'Check progress on your goals',        xpReward: 10 },
     { name: 'No distractions 1hr',   icon: '🔕', desc: 'Phone off, full focus for an hour',   xpReward: 20 },
