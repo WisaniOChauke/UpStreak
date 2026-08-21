@@ -17,7 +17,7 @@
         >{{ selectedAvatar }}</button>
         <div>
           <p class="text-sm font-medium text-stone-700 dark:text-stone-200">{{ profile.name || 'No name set' }}</p>
-          <p class="text-xs text-stone-400 mt-0.5">Click avatar to change</p>
+          <p class="text-xs text-stone-400 mt-0.5">{{ store.rank.icon }} {{ store.rank.title }} · Click avatar to change</p>
         </div>
       </div>
 

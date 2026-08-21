@@ -267,6 +267,15 @@ export const useDayloomStore = defineStore('dayloom', {
       this.achievements.forEach(a => { a.unlockedAt = null })
     },
 
+    editJournalEntry(id: string, content: string) {
+      const entry = this.journal.find(e => e.id === id)
+      if (entry) entry.content = content
+    },
+
+    deleteJournalEntry(id: string) {
+      this.journal = this.journal.filter(e => e.id !== id)
+    },
+
     dismissSuggestion(name: string) {
       if (!this.dismissedSuggestions.includes(name)) this.dismissedSuggestions.push(name)
     },

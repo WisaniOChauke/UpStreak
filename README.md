@@ -2,7 +2,7 @@
 
 > Weave your day — habits, goals, and journal in one place.
 
-🔗 **Live:** [dayloom.app](https://your-url-here) <!-- TODO: update once deployed -->
+🔗 **Live:** [dayloom.app](https://day-loom.vercel.app/)
 
 DayLoom is a personal productivity app that helps you track daily habits, set goals, and reflect through journaling — all in a clean, minimal interface.
 

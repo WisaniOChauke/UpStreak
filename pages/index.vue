@@ -327,11 +327,14 @@ const selectedMood = ref<'great' | 'good' | 'okay' | 'bad'>(todayEntry.value?.mo
 const journalText = ref(todayEntry.value?.content ?? '')
 const noteSaved = ref(false)
 
+const justSaved = ref(false)
+
 watch(todayEntry, (entry) => {
-  if (entry) {
+  if (entry && !justSaved.value) {
     journalText.value = entry.content
     selectedMood.value = entry.mood
   }
+  justSaved.value = false
 })
 
 const wasAllDone = ref(allDoneToday.value)
@@ -346,6 +349,7 @@ const toggle = (id: string) => {
 
 const saveEntry = () => {
   if (!journalText.value.trim()) return
+  justSaved.value = true
   store.saveJournalEntry(journalText.value, selectedMood.value)
   journalText.value = ''
   selectedMood.value = 'good'

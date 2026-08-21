@@ -37,33 +37,45 @@
         <h2 class="text-sm font-semibold text-stone-500 uppercase tracking-wide">Past Entries</h2>
         <input v-model="search" class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100 w-40 text-sm py-1.5" placeholder="Search..." />
       </div>
-      <div v-for="entry in filteredEntries" :key="entry.id" class="card dark:bg-stone-900 dark:border-stone-800 p-5 cursor-pointer hover:border-amber-200 dark:hover:border-amber-800 transition-colors" @click="selected = entry">
+      <div v-for="entry in filteredEntries" :key="entry.id" class="card dark:bg-stone-900 dark:border-stone-800 p-5 group hover:border-amber-200 dark:hover:border-amber-800 transition-colors">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-sm font-medium text-stone-600 dark:text-stone-300">{{ formatDate(entry.date) }}</span>
-          <span class="text-lg">{{ moodEmoji(entry.mood) }}</span>
+          <span class="text-sm font-medium text-stone-600 dark:text-stone-300 cursor-pointer" @click="openEntry(entry)">{{ formatDate(entry.date) }}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">{{ moodEmoji(entry.mood) }}</span>
+            <button class="opacity-0 group-hover:opacity-100 text-xs text-stone-400 hover:text-amber-500 transition-all" @click="startEdit(entry)">Edit</button>
+            <button class="opacity-0 group-hover:opacity-100 text-xs text-stone-400 hover:text-red-400 transition-all" @click="deleteEntry(entry.id)">Delete</button>
+          </div>
         </div>
-        <p class="text-sm text-stone-500 leading-relaxed line-clamp-3">{{ entry.content }}</p>
+        <p class="text-sm text-stone-500 leading-relaxed line-clamp-3 cursor-pointer" @click="openEntry(entry)">{{ entry.content }}</p>
       </div>
     </div>
 
-    <div v-else class="text-center py-12 text-stone-300">
+    <div v-else-if="!journal.length" class="text-center py-12 text-stone-300">
       <p class="text-4xl mb-3">📓</p>
-      <p class="text-sm">No past entries yet. Start writing!</p>
+      <p class="text-sm">Your story starts today — write your first entry above.</p>
     </div>
 
-    <!-- Entry detail modal -->
-    <div v-if="selected" class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50" @click.self="selected = null">
+    <!-- Entry detail / edit modal -->
+    <div v-if="selected" class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50" @click.self="closeModal">
       <div class="card dark:bg-stone-900 dark:border-stone-800 p-6 w-full max-w-lg mx-4 max-h-[80vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <span class="text-sm font-semibold text-stone-600 dark:text-stone-300">{{ formatDate(selected.date) }}</span>
           <div class="flex items-center gap-3">
             <span class="text-xl">{{ moodEmoji(selected.mood) }}</span>
-            <button class="text-stone-300 hover:text-stone-500" @click="selected = null">
+            <button class="text-stone-300 hover:text-stone-500" @click="closeModal">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
         </div>
-        <p class="text-sm text-stone-700 dark:text-stone-200 leading-relaxed whitespace-pre-wrap">{{ selected.content }}</p>
+        <textarea v-if="editing" v-model="editText" class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100 resize-none h-48 w-full mb-3" />
+        <p v-else class="text-sm text-stone-700 dark:text-stone-200 leading-relaxed whitespace-pre-wrap">{{ selected.content }}</p>
+        <div class="flex justify-end gap-2 mt-2">
+          <template v-if="editing">
+            <button class="btn-ghost" @click="editing = false">Cancel</button>
+            <button class="btn-primary" @click="saveEdit">Save</button>
+          </template>
+          <button v-else class="btn-ghost text-sm" @click="editing = true">Edit</button>
+        </div>
       </div>
     </div>
 
@@ -96,6 +108,36 @@ const pastEntries = computed(() =>
 
 const search = ref('')
 const selected = ref<typeof journal.value[0] | null>(null)
+const editing = ref(false)
+const editText = ref('')
+
+const openEntry = (entry: typeof journal.value[0]) => {
+  selected.value = entry
+  editing.value = false
+}
+
+const startEdit = (entry: typeof journal.value[0]) => {
+  selected.value = entry
+  editText.value = entry.content
+  editing.value = true
+}
+
+const closeModal = () => {
+  selected.value = null
+  editing.value = false
+}
+
+const saveEdit = () => {
+  if (!selected.value || !editText.value.trim()) return
+  store.editJournalEntry(selected.value.id, editText.value.trim())
+  selected.value = { ...selected.value, content: editText.value.trim() }
+  editing.value = false
+}
+
+const deleteEntry = (id: string) => {
+  store.deleteJournalEntry(id)
+  if (selected.value?.id === id) selected.value = null
+}
 
 const filteredEntries = computed(() =>
   pastEntries.value.filter(e =>
