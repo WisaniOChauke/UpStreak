@@ -46,7 +46,7 @@
         </button>
 
         <!-- XP Badge -->
-        <div class="card p-4">
+        <div class="card p-4 cursor-pointer hover:shadow-card-hover transition-shadow" @click="showRanks = true">
           <div class="flex items-center justify-between mb-1">
             <div class="flex items-center gap-1.5">
               <span class="text-base">{{ rank.icon }}</span>
@@ -72,6 +72,42 @@
 
     </div>
   </div>
+
+  <!-- Ranks overview modal -->
+  <Transition name="suggestions">
+    <div v-if="showRanks" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50" @click.self="showRanks = false">
+      <div class="rounded-3xl w-full max-w-sm mx-4 shadow-2xl overflow-hidden" style="background-color: var(--bg-card); border: 1px solid var(--border)">
+        <div class="flex items-center justify-between p-5 border-b" style="border-color: var(--border)">
+          <div>
+            <h2 class="text-base font-bold" style="color: var(--text-primary)">Discipline Ranks</h2>
+            <p class="text-xs mt-0.5" style="color: var(--text-muted)">200 XP per level</p>
+          </div>
+          <button class="w-7 h-7 flex items-center justify-center rounded-xl transition-colors" style="color: var(--text-muted)" @click="showRanks = false">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="p-3 flex flex-col gap-1.5 max-h-96 overflow-y-auto">
+          <div
+            v-for="r in ranks"
+            :key="r.min"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all"
+            :style="level >= r.min
+              ? { backgroundColor: 'var(--accent-light)', border: '1px solid var(--accent-ring)' }
+              : { backgroundColor: 'var(--bg-app)', border: '1px solid var(--border)', opacity: '0.5' }"
+          >
+            <span class="text-xl w-8 text-center">{{ r.icon }}</span>
+            <div class="flex-1">
+              <p class="text-sm font-semibold" style="color: var(--text-primary)">{{ r.title }}</p>
+              <p class="text-xs" style="color: var(--text-muted)">Level {{ r.min }} · {{ (r.min - 1) * 200 }} XP required</p>
+            </div>
+            <div v-if="level === r.min" class="text-xs font-bold px-2 py-0.5 rounded-full" style="background-color: var(--accent); color: #fff">You</div>
+            <svg v-else-if="level > r.min" class="w-4 h-4" style="color: var(--accent)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <svg v-else class="w-4 h-4 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10M12 3a9 9 0 100 18A9 9 0 0012 3z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Transition>
 
   <!-- Rank-up celebration -->
   <Transition name="suggestions">
@@ -159,6 +195,7 @@ const ranks = [
 const nextRank = computed(() => ranks.find(r => r.min === level.value + 1) ?? ranks[ranks.length - 1])
 
 const rankUpData = ref<{ icon: string; title: string } | null>(null)
+const showRanks = ref(false)
 
 watch(level, (newLv, oldLv) => {
   if (newLv > oldLv) {
