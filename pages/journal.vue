@@ -177,7 +177,7 @@ const moodEmoji = (mood: string) =>
 const formatDate = (d: string, id?: string) => {
   const date = new Date(d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
   if (!id) return date
-  const time = new Date(parseInt(id)).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  const time = new Date(parseInt(id)).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
   return `${date} · ${time}`
 }
 </script>
