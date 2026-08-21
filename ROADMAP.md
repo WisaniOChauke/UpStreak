@@ -29,6 +29,13 @@
 - [ ] Real-time sync across devices
 - [ ] Data backup and restore
 
+### Personalized Onboarding
+- [ ] Add "What describes you?" step to onboarding (Student, Professional, Athlete, Creative, etc.)
+- [ ] Save user role to profile store
+- [ ] Use role to pre-filter and weight habit suggestions
+- [ ] Personalize goal suggestions based on role
+- [ ] Adjust dashboard tone and content to match user lifestyle
+
 ### Calendar Integration
 - [ ] Google Calendar OAuth
 - [ ] Pull in existing appointments as habit reminders
