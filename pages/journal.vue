@@ -27,7 +27,7 @@
       <textarea
         v-model="journalText"
         class="input dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100 dark:placeholder-stone-500 resize-none h-36"
-        placeholder="Write freely — no rules, no judgment. This is yours alone, completely private."
+        placeholder="Your private space — write freely, no judgment."
       />
       <div class="flex justify-end mt-3">
         <button class="btn-primary" @click="save">Save +10 XP</button>
