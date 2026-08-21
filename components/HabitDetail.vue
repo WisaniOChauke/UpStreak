@@ -64,8 +64,10 @@
           v-model="notesInput"
           class="input resize-none h-20 text-sm"
           placeholder="Any notes for this habit..."
-          @blur="saveNotes"
         />
+        <div class="flex justify-end mt-2">
+          <button class="btn-primary text-xs" @click="saveNotes">Save notes</button>
+        </div>
       </div>
 
       <!-- Tab: Stats -->
