@@ -12,7 +12,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.707.707m12.728 12.728.707.707M3 12h1m16 0h1M4.927 19.073l.707-.707M18.364 5.636l.707-.707" />
             </svg>
           </div>
-          <span class="text-lg font-semibold tracking-tight" style="color: var(--text-primary)">Dayloom</span>
+          <span class="text-lg font-semibold tracking-tight" style="color: var(--text-primary)">UpStreak</span>
         </div>
 
         <!-- Nav -->
@@ -148,7 +148,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.707.707m12.728 12.728.707.707M3 12h1m16 0h1" />
           </svg>
         </div>
-        <h2 class="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-1">Welcome to Dayloom</h2>
+        <h2 class="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-1">Welcome to UpStreak</h2>
         <p class="text-sm text-stone-400 mb-6">What should we call you?</p>
         <input
           v-model="nameInput"
@@ -189,10 +189,10 @@
 </template>
 
 <script setup lang="ts">
-import { useDayloomStore } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
 
-const store = useDayloomStore()
+const store = useUpstreakStore()
 const { xp, level, xpPercent, xpToNext, darkMode, profile, theme, rank } = storeToRefs(store)
 const { fire: fireConfetti } = useConfetti()
 

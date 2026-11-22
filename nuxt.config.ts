@@ -16,9 +16,9 @@ export default defineNuxtConfig({
   typescript: { typeCheck: false },
   app: {
     head: {
-      title: 'Dayloom',
+      title: 'UpStreak',
       meta: [
-        { name: 'description', content: 'Weave your day — habits, goals, and journal in one place.' },
+        { name: 'description', content: 'Build lasting habits, reach your goals, and make progress every day with UpStreak.' },
         { name: 'theme-color', content: '#F59E0B' },
       ],
       link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],

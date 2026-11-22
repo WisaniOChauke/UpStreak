@@ -107,11 +107,11 @@
 </template>
 
 <script setup lang="ts">
-import { useDayloomStore } from '~/stores/dayloom'
-import type { Theme } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
+import type { Theme } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
 
-const store = useDayloomStore()
+const store = useUpstreakStore()
 const { profile } = storeToRefs(store)
 
 const nameInput = ref(profile.value.name)
@@ -143,7 +143,7 @@ const exportJSON = () => {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
   const a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
-  a.download = 'dayloom-export.json'
+  a.download = 'upstreak-export.json'
   a.click()
 }
 
@@ -158,7 +158,7 @@ const exportCSV = () => {
   const blob = new Blob([csv], { type: 'text/csv' })
   const a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
-  a.download = 'dayloom-export.csv'
+  a.download = 'upstreak-export.csv'
   a.click()
 }
 </script>

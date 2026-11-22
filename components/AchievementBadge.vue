@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Achievement } from '~/stores/dayloom'
+import type { Achievement } from '~/stores/upstreak'
 
 defineProps<{ achievement: Achievement }>()
 

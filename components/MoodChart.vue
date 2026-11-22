@@ -5,12 +5,12 @@
 <script setup lang="ts">
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler } from 'chart.js'
-import { useDayloomStore } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler)
 
-const { moodHistory } = storeToRefs(useDayloomStore())
+const { moodHistory } = storeToRefs(useUpstreakStore())
 
 const moodScore = (mood: string) => ({ great: 4, good: 3, okay: 2, bad: 1 }[mood] ?? 2)
 

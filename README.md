@@ -1,10 +1,8 @@
-# 🌅 DayLoom
+# UpStreak
 
-> Weave your day — habits, goals, and journal in one place.
+> Turn daily intentions into lasting progress.
 
-🔗 **Live:** [dayloom.app](https://day-loom.vercel.app/)
-
-DayLoom is a personal productivity app that helps you track daily habits, set goals, and reflect through journaling — all in a clean, minimal interface.
+UpStreak helps you build habits, make progress on goals, and reflect through journaling in one calm, focused workspace.
 
 ---
 
@@ -60,7 +58,7 @@ App runs at `http://localhost:3000`
 ## 📁 Project Structure
 
 ```
-dayloom/
+upstreak/
 ├── assets/         # Global CSS + theme tokens
 ├── components/     # Reusable Vue components
 ├── composables/    # Shared logic (reminders, confetti)

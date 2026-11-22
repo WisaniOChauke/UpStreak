@@ -21,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import { useDayloomStore } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
 
-const { habits } = storeToRefs(useDayloomStore())
+const { habits } = storeToRefs(useUpstreakStore())
 
 const scale = ['bg-stone-100', 'bg-amber-100', 'bg-amber-200', 'bg-amber-300', 'bg-amber-400']
 

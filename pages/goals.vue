@@ -157,10 +157,10 @@
 </template>
 
 <script setup lang="ts">
-import { useDayloomStore } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
 
-const store = useDayloomStore()
+const store = useUpstreakStore()
 const { goals } = storeToRefs(store)
 const { fire: fireConfetti } = useConfetti()
 

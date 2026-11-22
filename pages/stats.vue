@@ -129,10 +129,10 @@
 </template>
 
 <script setup lang="ts">
-import { useDayloomStore } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
 
-const store = useDayloomStore()
+const store = useUpstreakStore()
 const { xp, level, habits, goals, journal, achievements, unlockedAchievements, weeklyStats, remindersEnabled, moodHistory } = storeToRefs(store)
 
 const reminders = useReminders()

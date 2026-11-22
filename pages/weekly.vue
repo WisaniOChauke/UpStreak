@@ -72,10 +72,10 @@
 </template>
 
 <script setup lang="ts">
-import { useDayloomStore } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
 
-const store = useDayloomStore()
+const store = useUpstreakStore()
 const { habits, journal, weeklyStats } = storeToRefs(store)
 
 const weekDates = computed(() => weeklyStats.value.map(d => d.date))

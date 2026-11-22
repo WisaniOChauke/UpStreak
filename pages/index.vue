@@ -200,10 +200,10 @@
 </template>
 
 <script setup lang="ts">
-import { useDayloomStore } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
 
-const store = useDayloomStore()
+const store = useUpstreakStore()
 const { todayHabits, completedToday, habits, todayEntry, allDoneToday, removedHabits } = storeToRefs(store)
 const { fire: fireConfetti } = useConfetti()
 

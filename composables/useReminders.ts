@@ -1,7 +1,7 @@
-import { useDayloomStore } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
 
 export const useReminders = () => {
-  const store = useDayloomStore()
+  const store = useUpstreakStore()
   const permission = ref<NotificationPermission>('default')
 
   const requestPermission = async () => {
@@ -19,7 +19,7 @@ export const useReminders = () => {
     next.setHours(hours, minutes, 0, 0)
     if (next <= now) next.setDate(next.getDate() + 1)
     setTimeout(() => {
-      new Notification('Dayloom 🌟', { body: "Time to check in on your habits!" })
+      new Notification('UpStreak 🌟', { body: "Time to check in on your habits!" })
       if (store.remindersEnabled) scheduleReminder(time)
     }, next.getTime() - now.getTime())
   }

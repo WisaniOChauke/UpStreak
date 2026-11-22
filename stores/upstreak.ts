@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { persistedState } from '#imports'
 
 export type HabitCategory = 'health' | 'work' | 'personal' | 'fitness' | 'learning' | 'other'
 
@@ -59,7 +58,10 @@ const ALL_ACHIEVEMENTS: Achievement[] = [
   { id: 'xp_500',         title: 'XP Grinder',       description: 'Earn 500 total XP',                  icon: '💎', unlockedAt: null },
 ]
 
-export const useDayloomStore = defineStore('dayloom', {
+const storageKey = 'upstreak-v1'
+const legacyStorageKey = 'dayloom-v1'
+
+export const useUpstreakStore = defineStore('upstreak', {
   state: () => ({
     xp: 0,
     darkMode: false,
@@ -292,7 +294,24 @@ export const useDayloomStore = defineStore('dayloom', {
   },
 
   persist: {
-    key: 'dayloom-v1',
-    storage: persistedState.localStorage,
+    key: storageKey,
+    storage: {
+      getItem(key: string) {
+        if (typeof localStorage === 'undefined') return null
+
+        const currentState = localStorage.getItem(key)
+        if (currentState !== null || key !== storageKey) return currentState
+
+        const legacyState = localStorage.getItem(legacyStorageKey)
+        if (legacyState !== null) localStorage.setItem(key, legacyState)
+        return legacyState
+      },
+      setItem(key: string, value: string) {
+        if (typeof localStorage !== 'undefined') localStorage.setItem(key, value)
+      },
+    },
+    afterHydrate() {
+      if (typeof localStorage !== 'undefined') localStorage.removeItem(legacyStorageKey)
+    },
   },
 })

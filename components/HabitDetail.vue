@@ -143,13 +143,13 @@
 </template>
 
 <script setup lang="ts">
-import { useDayloomStore } from '~/stores/dayloom'
-import type { Habit, HabitCategory } from '~/stores/dayloom'
+import { useUpstreakStore } from '~/stores/upstreak'
+import type { Habit, HabitCategory } from '~/stores/upstreak'
 
 const props = defineProps<{ habit: Habit & { doneToday: boolean } }>()
 const emit = defineEmits<{ close: []; toggle: [id: string]; delete: [id: string] }>()
 
-const store = useDayloomStore()
+const store = useUpstreakStore()
 const tabs = ['Log', 'Stats', 'Edit'] as const
 const activeTab = ref<'Log' | 'Stats' | 'Edit'>('Log')
 
