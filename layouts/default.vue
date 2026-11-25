@@ -45,6 +45,13 @@
           {{ darkMode ? 'Light mode' : 'Dark mode' }}
         </button>
 
+        <div v-if="accountEmail" class="mb-3 rounded-xl px-3 py-2" style="background-color: var(--bg-app)">
+          <p class="truncate text-xs" style="color: var(--text-muted)">{{ accountEmail }}</p>
+          <button class="mt-1 text-xs font-medium text-amber-600 hover:text-amber-700" @click="signOut">
+            Log out
+          </button>
+        </div>
+
         <!-- XP Badge -->
         <div class="card p-4 cursor-pointer hover:shadow-card-hover transition-shadow" @click="showRanks = true">
           <div class="flex items-center justify-between mb-1">
@@ -84,8 +91,50 @@
           <component :is="item.icon" class="w-5 h-5" />
           <span class="text-[10px] font-medium">{{ item.label }}</span>
         </NuxtLink>
+        <button
+          v-if="accountEmail"
+          class="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-xl text-stone-500"
+          aria-label="Log out"
+          @click="signOut"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M18 15l3-3m0 0l-3-3m3 3H9" />
+          </svg>
+          <span class="text-[10px] font-medium">Log out</span>
+        </button>
       </nav>
 
+    </div>
+
+    <div
+      v-if="syncStatus === 'loading' || syncStatus === 'conflict' || syncStatus === 'error'"
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm"
+    >
+      <section class="w-full max-w-md rounded-3xl border border-stone-200 bg-white p-7 shadow-2xl">
+        <template v-if="syncStatus === 'loading'">
+          <div class="mb-3 text-3xl">☁️</div>
+          <h2 class="text-lg font-semibold text-stone-800">Loading your progress</h2>
+          <p class="mt-1 text-sm text-stone-500">Connecting to your UpStreak account…</p>
+        </template>
+        <template v-else-if="syncStatus === 'conflict'">
+          <div class="mb-3 text-3xl">📦</div>
+          <h2 class="text-lg font-semibold text-stone-800">Choose which progress to use</h2>
+          <p class="mt-2 text-sm leading-6 text-stone-500">
+            This device and your account both have saved progress. Choose one copy; the other will not be merged.
+          </p>
+          <div class="mt-6 flex flex-col gap-3">
+            <button class="btn-primary w-full" @click="resolveSyncConflict('cloud')">Use account progress</button>
+            <button class="btn-ghost w-full" @click="resolveSyncConflict('local')">Replace account progress with this device</button>
+          </div>
+        </template>
+        <template v-else>
+          <div class="mb-3 text-3xl">⚠️</div>
+          <h2 class="text-lg font-semibold text-stone-800">Couldn’t sync your progress</h2>
+          <p class="mt-2 break-words text-sm text-red-700">{{ syncError }}</p>
+          <p class="mt-2 text-xs text-stone-500">Your local browser data has not been cleared.</p>
+          <button class="btn-primary mt-5 w-full" @click="retrySync">Try again</button>
+        </template>
+      </section>
     </div>
   </div>
 
@@ -191,9 +240,18 @@
 <script setup lang="ts">
 import { useUpstreakStore } from '~/stores/upstreak'
 import { storeToRefs } from 'pinia'
+import { useUpstreakSync } from '~/composables/useUpstreakSync'
 
 const store = useUpstreakStore()
 const { xp, level, xpPercent, xpToNext, darkMode, profile, theme, rank } = storeToRefs(store)
+const {
+  status: syncStatus,
+  errorMessage: syncError,
+  email: accountEmail,
+  resolveConflict: resolveSyncConflict,
+  startSync: retrySync,
+  signOut,
+} = useUpstreakSync()
 const { fire: fireConfetti } = useConfetti()
 
 const ranks = [
